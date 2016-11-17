@@ -1,0 +1,14 @@
+{
+  "name": "cloudedu-service",
+  "version": "1.0.0",
+  "description": "CloudEdu Service",
+  "main": "CloudEduService.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "losfair",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}

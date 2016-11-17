@@ -1,0 +1,3 @@
+CloudEduService:
+	tsc -p .
+
