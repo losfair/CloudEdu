@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "target": "es2015",
+        "noImplicitAny": false,
+        "module": "system",
+        "removeComments": true,
+        "sourceMap": true
+    }
+}
