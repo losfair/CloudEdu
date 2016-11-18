@@ -10,11 +10,9 @@ const listenPort = 6711;
 
 let app = express();
 
-app.use(bodyParser());
+app.use(bodyParser.json());
 
-app.get("/", function(req, resp) {
-    resp.send("Hello world\n");
-});
+app.post("/login/verifyToken", loginHandler.onVerifyTokenRequest);
 
 app.listen(listenPort, function() {
     console.log("Listening on " + listenPort.toString());

@@ -3,10 +3,11 @@
 /// <reference path="../typings/request/request.d.ts" />
 
 import request = require("request");
+import Session = require("./Session");
 
 const ssoApiUrlPrefix = "https://hyperidentity.ifxor.com/";
 
-async function verifyClientToken(token: string, callback: Function) {
+async function verifyClientToken(token: string) {
     let reqStr = "client_token=" + encodeURIComponent(token);
     let respStr: any = await new Promise(function(callback: Function) {
         request.post(
@@ -19,24 +20,45 @@ async function verifyClientToken(token: string, callback: Function) {
         );
     });
 
-    if(!respStr) callback(null);
+    if(!respStr) return null;
 
     try {
         var respData = JSON.parse(respStr);
     } catch(e) {
-        callback(null);
+        return null;
     }
 
     if(respData.err !== 0) {
-        callback(null);
+        return null;
     }
 
-    callback({
+    return {
         "username": respData.username,
         "domain": respData.domain
-    });
+    };
 }
 
-export function onVerifyTokenRequest(req, resp) {
+export async function onVerifyTokenRequest(req, resp) {
+    if(!req.body.client_token) {
+        resp.send("Invalid client token");
+        return;
+    }
+
+    let result = await verifyClientToken(req.body.client_token);
+
+    if(!result) {
+        resp.send("Unable to verify client token");
+        return;
+    }
+
+    let sessionInfo = null;
     
+    try {
+        sessionInfo = Session.createSession(result.username);
+    } catch(e) {
+        resp.send("Error while creating session: " + e);
+        return;
+    }
+
+    resp.send(JSON.stringify(sessionInfo));
 }

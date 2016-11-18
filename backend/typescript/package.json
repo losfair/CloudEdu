@@ -9,6 +9,7 @@
   "author": "losfair",
   "license": "LGPL-3.0",
   "dependencies": {
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "mongodb": "^2.2.11"
   }
 }
