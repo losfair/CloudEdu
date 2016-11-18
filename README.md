@@ -1,2 +1,2 @@
 # CloudEdu
-A light web app for education written in Javascript
+A light web app for education written in Typescript
