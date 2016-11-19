@@ -7,8 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-const mongodb = require("mongodb");
-let mongoClient = mongodb.MongoClient;
 let dbContext = null;
 function generateRandomString(l) {
     const charList = "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -25,7 +23,7 @@ function createSession(username) {
             "userName": username,
             "createTime": Date.now()
         };
-        var result = yield new Promise(function (callback) {
+        let result = yield new Promise(function (callback) {
             dbContext.collection("sessions").insert(sessionInfo, function (err, data) {
                 if (err)
                     throw "Unable to create session: Database operation failed";
@@ -36,16 +34,35 @@ function createSession(username) {
     });
 }
 exports.createSession = createSession;
-function connectToDb() {
+function getSessionInfo(sessionId) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield new Promise(function (callback) {
-            mongoClient.connect("mongodb://localhost:27017/CloudEduService", function (err, db) {
+        if (!sessionId)
+            return null;
+        let result = yield new Promise(function (callback) {
+            dbContext.collection("sessions").find({
+                "sessionId": sessionId
+            }).toArray(function (err, data) {
                 if (err)
                     throw err;
-                callback(db);
+                if (data.length == 0) {
+                    callback(null);
+                    return;
+                }
+                data[0]["_id"] = "";
+                callback(data[0]);
             });
         });
+        return result;
     });
 }
-dbContext = connectToDb();
+exports.getSessionInfo = getSessionInfo;
+let moduleInitialized = false;
+function initModule(db) {
+    if (moduleInitialized)
+        return;
+    moduleInitialized = true;
+    dbContext = db;
+    console.log(dbContext);
+}
+exports.initModule = initModule;
 //# sourceMappingURL=Session.js.map

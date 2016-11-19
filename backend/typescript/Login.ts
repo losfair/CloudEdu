@@ -8,11 +8,14 @@ import Session = require("./Session");
 const ssoApiUrlPrefix = "https://hyperidentity.ifxor.com/";
 
 async function verifyClientToken(token: string) {
-    let reqStr = "client_token=" + encodeURIComponent(token);
     let respStr: any = await new Promise(function(callback: Function) {
         request.post(
             ssoApiUrlPrefix + "identity/verify/verify_client_token", 
-            reqStr,
+            {
+                form: {
+                    "client_token": token
+                }
+            },
             function(err, resp, body) {
                 if(err) callback(null);
                 else callback(body);
@@ -20,10 +23,14 @@ async function verifyClientToken(token: string) {
         );
     });
 
-    if(!respStr) return null;
+    if(!respStr) {
+        return null;
+    }
+
+    let respData = null;
 
     try {
-        var respData = JSON.parse(respStr);
+        respData = JSON.parse(respStr);
     } catch(e) {
         return null;
     }
@@ -54,11 +61,45 @@ export async function onVerifyTokenRequest(req, resp) {
     let sessionInfo = null;
     
     try {
-        sessionInfo = Session.createSession(result.username);
+        sessionInfo = await Session.createSession(result.username);
     } catch(e) {
         resp.send("Error while creating session: " + e);
         return;
     }
 
+    sessionInfo["_id"] = "";
+
     resp.send(JSON.stringify(sessionInfo));
+}
+
+export async function onGetSession(req, resp) {
+    if(!req.body.sessionId) {
+        resp.send("Invalid session id");
+        return;
+    }
+
+    let sessionInfo = null;
+
+    try {
+        sessionInfo = await Session.getSessionInfo(req.body.sessionId);
+    } catch(e) {
+        resp.send("Error while getting session info: " + e);
+        return;
+    }
+
+    if(!sessionInfo) {
+        resp.send("Session not found.");
+        return;
+    }
+
+    resp.send(JSON.stringify(sessionInfo));
+}
+
+let moduleInitialized = false;
+
+export function initModule(db) {
+    if(moduleInitialized) return;
+    moduleInitialized = true;
+
+    Session.initModule(db);
 }

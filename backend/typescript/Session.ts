@@ -1,8 +1,4 @@
 /// <reference path="../typings/node/node.d.ts" />
-/// <reference path="../typings/mongodb/mongodb.d.ts" />
-
-import mongodb = require("mongodb");
-let mongoClient = mongodb.MongoClient;
 
 let dbContext = null;
 
@@ -23,7 +19,7 @@ export async function createSession(username: string) {
         "userName": username,
         "createTime": Date.now()
     };
-    var result = await new Promise(function(callback) {
+    let result = await new Promise(function(callback: Function) {
         dbContext.collection("sessions").insert(sessionInfo, function(err, data) {
             if(err) throw "Unable to create session: Database operation failed";
             callback(data);
@@ -32,13 +28,32 @@ export async function createSession(username: string) {
     return sessionInfo;
 }
 
-async function connectToDb() {
-    return await new Promise(function(callback) {
-        mongoClient.connect("mongodb://localhost:27017/CloudEduService", function(err, db) {
+export async function getSessionInfo(sessionId: string) {
+    if(!sessionId) return null;
+
+    let result = await new Promise(function(callback: Function) {
+        dbContext.collection("sessions").find({
+            "sessionId": sessionId
+        }).toArray(function(err, data) {
             if(err) throw err;
-            callback(db);
+            if(data.length == 0) {
+                callback(null);
+                return;
+            }
+            data[0]["_id"] = "";
+            callback(data[0]);
         });
     });
+
+    return result;
 }
 
-dbContext = connectToDb();
+
+let moduleInitialized = false;
+
+export function initModule(db) {
+    if(moduleInitialized) return;
+    moduleInitialized = true;
+    dbContext = db;
+    console.log(dbContext);
+}
