@@ -1,0 +1,37 @@
+head
+	title => [defaultTitle]
+	meta name="viewport" content="width=device-width, initial-scale=1.0"
+	link rel="stylesheet" href="css/index.css"
+	link rel="stylesheet" href="css/material.indigo-pink.min.css"
+	link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"
+
+body
+	div .mdl-layout .mdl-js-layout .mdl-layout--fixed-header
+		header .mdl-layout__header
+			div .mdl-layout__header-row
+				span .mdl-layout-title => [defaultTitle]
+				div .mdl-layout-spacer
+				
+		div .mdl-layout__drawer
+			nav .mdl-navigation
+				a .mdl-navigation__link href="http://example.com" => "Example"
+
+		main .mdl-layout__content #page-content
+			div #login-form .mdl-card .mdl-shadow--2dp .default-card-style
+				div .mdl-card__title
+					h2 .mdl-card__title-text => "Login"
+				div .mdl-card__supporting-text
+					form action="#"
+						div .mdl-textfield .mdl-js-textfield
+							input #login-username .mdl-textfield__input type="text"
+							label .mdl-textfield__label for="login-username" => "Username"
+						div .mdl-textfield .mdl-js-textfield
+							input #login-password .mdl-textfield__input type="password"
+							label .mdl-textfield__label for="login-password" => "Password"
+				div .mdl-card__actions .mdl-card--border
+					a #login-button .mdl-button .mdl-button--colored .mdl-js-button .mdl-js-ripple-effect => "Login"
+					a #register-button .mdl-button .mdl-button--colored .mdl-js-button .mdl-js-ripple-effect => "Register"
+
+	script src="scripts/vue.min.js"
+	script src="scripts/material.min.js"
+	script src="bundle.min.js"

@@ -9,27 +9,21 @@ function sleep(ms: number) {
     });
 }
 
+function onLoginClick() {
+    alert("Hello world");
+}
+
 async function loadPage () {
     var app = new Vue({
         el: "#container",
         data: {
             "testMsg": "Hello world",
             "showTestMsg": true
+        },
+        methods: {
+            "onLoginClick": onLoginClick
         }
     });
-    await sleep(1000);
-    await (function() {
-        app.$data.testMsg = "...";
-        return new Promise(function(callback) {
-            setTimeout(callback, 1000);
-        });
-    })();
-    await (function() {
-        app.$data.showTestMsg = false;
-        return new Promise(function(callback) {
-            setTimeout(callback, 1000);
-        });
-    })();
 };
 
 window.addEventListener("load", loadPage);

@@ -1,0 +1,14 @@
+#page-content {
+    padding-top: 30px;
+    width: 100%;
+}
+
+.default-card-style {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.default-card-style > .mdl-card__title {
+    background-color: #C2185B;
+    color: #FFFFFF;
+}
