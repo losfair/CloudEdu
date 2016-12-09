@@ -4,9 +4,20 @@ body {
 }
 
 .page-content {
+    position: fixed;
+    width: 100%;
     margin-top: 50px;
+    overflow: hidden;
 }
 
 .page-content-invisible {
     display: none;
+}
+
+#system-info-container {
+    margin: 0 auto;
+}
+
+.system-info-list-item-value {
+    color: #FFFFFF;
 }

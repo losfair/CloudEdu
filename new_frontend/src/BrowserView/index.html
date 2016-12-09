@@ -19,13 +19,14 @@
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
                 <!-- Title -->
-                <span class="mdl-layout-title">CloudEdu</span>
+                <span class="mdl-layout-title goto-home">CloudEdu</span>
             </div>
         </header>
         <div class="mdl-layout__drawer">
             <span class="mdl-layout-title">CloudEdu</span>
             <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" href="javascript:;" id="nav-button-goto-home"></a>
+                <a class="mdl-navigation__link goto-home" href="javascript:;" id="nav-button-goto-home"></a>
+                <a class="mdl-navigation__link do-exit" href="javascript:;" id="nav-button-exit"></a>
             </nav>
             <div style="height: 20px"></div>
             <!-- Copyright -->
@@ -60,7 +61,7 @@
                                     <h4 class="text-alphaboard-title"></h4>
                                 </div>
                                 <div class="mdl-card__actions mdl-card--border">
-                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-nav-card-enter">
+                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-nav-card-enter" onclick="openAlphaBoard()">
                                     </a>
                                     <div class="mdl-layout-spacer"></div>
                                 </div>
