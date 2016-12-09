@@ -1,0 +1,12 @@
+body {
+    background-image: url(../images/light_texture2299.jpg);
+    background-size: cover;
+}
+
+.page-content {
+    margin-top: 50px;
+}
+
+.page-content-invisible {
+    display: none;
+}

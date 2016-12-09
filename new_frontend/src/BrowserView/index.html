@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="css/material.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/MaterialIcons.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="scripts/jquery.min.js"></script>
+    <script src="scripts/material.min.js"></script>
+    <script src="scripts/translations/zh-CN.js"></script>
+    <script src="scripts/index.js"></script>
+    <title>CloudEdu</title>
+</head>
+
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="mdl-layout-title">CloudEdu</span>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <span class="mdl-layout-title">CloudEdu</span>
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="javascript:;" id="nav-button-goto-home"></a>
+            </nav>
+            <div style="height: 20px"></div>
+            <!-- Copyright -->
+            <div style="margin-left: 15px">
+                <span>Copyright &copy; 2016 Heyang Zhou.<br></span>
+                <span>GitHub: <strong>losfair/CloudEdu</strong></span>
+            </div>
+        </div>
+        <main class="mdl-layout__content">
+            <div id="main-container" class="page-content">
+                <link rel="stylesheet" type="text/css" href="css/nav-cards.css" />
+                <table style="margin: 0 auto">
+                    <tr>
+                        <td>
+                            <!-- Notification publishing -->
+                            <div class="index-nav-card card-color-pink mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__title mdl-card--expand">
+                                    <h4 class="text-notification-publish-title"></h4>
+                                </div>
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-nav-card-enter">
+                                    </a>
+                                    <div class="mdl-layout-spacer"></div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <!-- AlphaBoard -->
+                            <div class="index-nav-card card-color-purple mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__title mdl-card--expand">
+                                    <h4 class="text-alphaboard-title"></h4>
+                                </div>
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-nav-card-enter">
+                                    </a>
+                                    <div class="mdl-layout-spacer"></div>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td>
+
+                            <!-- File browser -->
+                            <div class="index-nav-card card-color-blue mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__title mdl-card--expand">
+                                    <h4 class="text-file-browser-title"></h4>
+                                </div>
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-nav-card-enter">
+                                    </a>
+                                    <div class="mdl-layout-spacer"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+
+                            <!-- System info -->
+                            <div class="index-nav-card card-color-orange mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__title mdl-card--expand">
+                                    <h4 class="text-system-info-title"></h4>
+                                </div>
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-nav-card-enter" onclick="showSystemInfo()">
+                                    </a>
+                                    <div class="mdl-layout-spacer"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="system-info-container" class="page-content page-content-invisible">
+            </div>
+            <div style="height: 50px"></div>
+        </main>
+    </div>
+</body>
+
+</html>
