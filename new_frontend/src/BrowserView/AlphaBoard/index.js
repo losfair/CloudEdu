@@ -32,7 +32,7 @@ var enableNodeExtensions = false;
 
 const localServiceAddr = "http://127.0.0.1:9021";
 
-var serverAddr = "https://hydrocloud.ntzx.cn/AlphaBoard/backend";
+var serverAddr = localStorage["AlphaBoard-ServerAddr"];
 
 function isInNode() {
     try {
@@ -45,6 +45,7 @@ function isInNode() {
 }
 
 function loadLocalConfig() {
+    /*
     var fs = require("fs");
     var process = require("process");
     var path = require("path");
@@ -58,6 +59,7 @@ function loadLocalConfig() {
     if(cfgData.serverAddr) serverAddr = cfgData.serverAddr;
     if(cfgData.stickyRadius) stickyRadius = cfgData.stickyRadius;
     if(cfgData.lineWidth) lineWidth = cfgData.lineWidth;
+    */
 }
 
 function toggleFullScreen() {
@@ -71,26 +73,14 @@ function getQueryString(name)
     else return null;
 }
 
+// localStorage is used instead of cookies.
+
 function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length,c.length);
-        }
-    }
-    return "";
+    return localStorage[cname];
 }
 
 function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    localStorage[cname] = cvalue;
 }
 
 function randomNumeric() {

@@ -6,6 +6,7 @@ import (
     "net/http"
     "io/ioutil"
     "encoding/json"
+    "DeviceManager"
 )
 
 const CLIENT_SERVICE_VERSION = "0.1.0 20161210"
@@ -34,6 +35,16 @@ func onPing(w http.ResponseWriter, r *http.Request) {
 
 func onGetVersion(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(CLIENT_SERVICE_VERSION))
+}
+
+func onGetDriveList(w http.ResponseWriter, r *http.Request) {
+    drives := DeviceManager.GetDriveList()
+    result, err := json.Marshal(drives)
+    if err != nil {
+        w.Write([]byte("Failed"))
+        return
+    }
+    w.Write(result)
 }
 
 func onGetConfigItem(w http.ResponseWriter, r *http.Request) {
@@ -86,5 +97,6 @@ func main() {
     http.HandleFunc("/ping", onPing)
     http.HandleFunc("/version", onGetVersion)
     http.HandleFunc("/config/get", onGetConfigItem)
+    http.HandleFunc("/devices/drives/list", onGetDriveList)
     http.ListenAndServe("127.0.0.1:9033", nil)
 }

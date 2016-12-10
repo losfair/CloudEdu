@@ -11,6 +11,7 @@ let texts = {
     ".text-settings-title": "设置",
     ".text-app-version": "CloudEdu 版本",
     ".text-app-build": "构建编号",
+    ".text-client-service-version": "客户端服务版本",
     ".text-node-version": "Node 版本",
     ".text-cpu-model": "CPU 型号",
     ".text-current-platform": "操作系统类型",
@@ -18,5 +19,7 @@ let texts = {
     ".text-current-username": "当前用户名",
     ".text-current-uptime": "运行时间",
     ".text-alphaboard-server-addr": "AlphaBoard 云服务地址",
-    ".text-settings-error-no-client-service": "错误：客户端服务未运行。"
+    ".text-settings-error-no-client-service": "错误：客户端服务未运行。",
+    ".text-drive-added": "新增驱动器:",
+    ".text-drive-removed": "移除驱动器:"
 }
