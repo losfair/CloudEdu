@@ -4,6 +4,8 @@ const CLIENT_SERVICE_ADDR = "http://127.0.0.1:9033/";
 
 const request = require("request");
 const process = require("process");
+const url = require("url");
+const path = require("path");
 const child_process = require("child_process");
 const os = require("os");
 const {ipcRenderer, shell} = require("electron");
@@ -31,7 +33,7 @@ function getConfigItem(key, callback) {
             "key": key
         })
     }, (err, resp, body) => {
-        if(err || !body) callback(null);
+        if(err || !body || body == "Failed" || body == "Unknown type") callback(null);
         else callback(body);
     });
 }
@@ -170,9 +172,17 @@ function startCheckDriveChange() {
     })
 }
 
+function loadStylesFromConfig() {
+    getConfigItem("backgroundImage", (result) => {
+        if(!result) return;
+        $(document.body).css("background-image", "url(" + "file:///" + result + ")");
+    })
+}
+
 window.addEventListener("load", () => {
     updateTexts();
     checkClientService();
+    loadStylesFromConfig();
     $(".goto-home").click(() => {
         $(".page-content").fadeOut();
         $("#main-container").fadeIn();

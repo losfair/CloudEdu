@@ -2,8 +2,8 @@ body {
     user-select: none;
     -webkit-user-select: none;
     background-color: #CCCCCC;
-    /*background-image: url(../images/light_texture2299.jpg);
-    background-size: cover;*/
+    /*background-image: url(../images/light_texture2299.jpg);*/
+    background-size: cover;
 }
 
 #main-dialog {
