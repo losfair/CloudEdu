@@ -1,6 +1,6 @@
 {
-  "name": "cloudedu-frontend",
-  "version": "1.0.0",
+  "name": "cloudedu_frontend",
+  "version": "0.1.0",
   "description": "CloudEdu Frontend",
   "main": "main.js",
   "scripts": {
