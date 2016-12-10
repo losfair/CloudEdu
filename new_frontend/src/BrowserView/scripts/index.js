@@ -79,19 +79,6 @@ function checkClientService() {
     });
 }
 
-window.addEventListener("load", () => {
-    updateTexts();
-    checkClientService();
-    $(".goto-home").click(() => {
-        $(".page-content").fadeOut();
-        $("#main-container").fadeIn();
-    });
-    $(".do-exit").click(() => {
-        window.close();
-    });
-    startCheckDriveChange();
-});
-
 function getUptimeString() {
     let uptime = new Date(os.uptime() * 1000);
     let uptimeString = uptime.getHours() + "h " + uptime.getMinutes() + "m " + uptime.getSeconds() + "s";
@@ -177,3 +164,16 @@ function startCheckDriveChange() {
         }
     })
 }
+
+window.addEventListener("load", () => {
+    updateTexts();
+    checkClientService();
+    $(".goto-home").click(() => {
+        $(".page-content").fadeOut();
+        $("#main-container").fadeIn();
+    });
+    $(".do-exit").click(() => {
+        window.close();
+    });
+    startCheckDriveChange();
+});

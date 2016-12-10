@@ -3,3 +3,4 @@ node_modules/
 Staging/
 *.js.map
 *.log
+*.exe

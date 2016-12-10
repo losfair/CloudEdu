@@ -1,5 +1,6 @@
 const {app, BrowserWindow, ipcMain} = require("electron");
 const url = require("url");
+const child_process = require("child_process");
 const path = require("path");
 
 const appPaths = {
@@ -64,7 +65,13 @@ function initWindow() {
     });
 }
 
-app.on("ready", initWindow);
+app.on("ready", () => {
+    const launcher = child_process.spawn(path.join(__dirname, "bin/Launcher.bat"), [path.join(__dirname, "bin/ClientService.exe")]);
+    launcher.on("exit", () => {
+        initWindow();
+    });
+});
+
 app.on("window-all-closed", () => {
     app.quit();
 });
