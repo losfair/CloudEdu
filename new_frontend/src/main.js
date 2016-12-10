@@ -2,6 +2,12 @@ const {app, BrowserWindow, ipcMain} = require("electron");
 const url = require("url");
 const child_process = require("child_process");
 const path = require("path");
+const fs = require("fs");
+const installationHandler = require("./installationHandler.js");
+
+if(installationHandler.handleSquirrelEvent()) {
+    return;
+}
 
 const appPaths = {
     "AlphaBoard": "BrowserView/AlphaBoard/index.html"
@@ -66,7 +72,11 @@ function initWindow() {
 }
 
 app.on("ready", () => {
-    const launcher = child_process.spawn(path.join(__dirname, "bin/Launcher.bat"), [path.join(__dirname, "bin/ClientService.exe")]);
+    let args = [path.join(__dirname, "bin/ClientService.exe")];
+    if(!fs.existsSync(path.join(process.cwd(), "config.json"))) {
+        args.push(path.join(__dirname, "default_config.json"));
+    }
+    const launcher = child_process.spawn(path.join(__dirname, "bin/Launcher.bat"), args);
     launcher.on("exit", () => {
         initWindow();
     });

@@ -9,7 +9,7 @@ import (
     "DeviceManager"
 )
 
-const CLIENT_SERVICE_VERSION = "0.1.0 20161210"
+const CLIENT_SERVICE_VERSION = "0.1.1 20161210"
 
 var cfg map[string]interface{}
 
