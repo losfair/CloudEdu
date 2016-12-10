@@ -1,6 +1,9 @@
 body {
-    background-image: url(../images/light_texture2299.jpg);
-    background-size: cover;
+    user-select: none;
+    -webkit-user-select: none;
+    background-color: #333333;
+    /*background-image: url(../images/light_texture2299.jpg);
+    background-size: cover;*/
 }
 
 .page-content {
