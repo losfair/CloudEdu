@@ -125,7 +125,7 @@ function showSettings() {
 
 function openAlphaBoard() {
     getConfigItem("AlphaBoard_ServerAddr", (v) => {
-        if(!v) showDialog("错误", "无法获取 AlphaBoard 云服务地址。");
+        if(!v) showDialog(texts[".text-error-title"], texts[".text-no-alphaboard-server-address"]);
         else {
             localStorage["AlphaBoard-ServerAddr"] = v;
             ipcRenderer.sendSync("synchronous-message", {
