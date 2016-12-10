@@ -4,6 +4,7 @@ const CLIENT_SERVICE_ADDR = "http://127.0.0.1:9033/";
 
 const request = require("request");
 const process = require("process");
+const child_process = require("child_process");
 const os = require("os");
 const {ipcRenderer, shell} = require("electron");
 const $ = require("jquery");
@@ -108,6 +109,10 @@ function showSettings() {
         updateTexts();
         $("#settings-container").fadeIn();
     });
+}
+
+function openFileBrowser() {
+    child_process.spawn("explorer.exe", []);
 }
 
 function openAlphaBoard() {
