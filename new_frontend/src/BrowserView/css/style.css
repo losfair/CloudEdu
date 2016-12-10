@@ -1,9 +1,19 @@
 body {
     user-select: none;
     -webkit-user-select: none;
-    background-color: #333333;
+    background-color: #CCCCCC;
     /*background-image: url(../images/light_texture2299.jpg);
     background-size: cover;*/
+}
+
+#main-dialog {
+    display: none;
+    position: fixed;
+    z-index: 100;
+}
+
+.header-icons {
+    margin-left: 10px;
 }
 
 .page-content {
@@ -15,12 +25,9 @@ body {
 
 .page-content-invisible {
     display: none;
-}
-
-#system-info-container {
-    margin: 0 auto;
+    margin-left: 100px;
 }
 
 .system-info-list-item-value {
-    color: #FFFFFF;
+    color: #000000;
 }

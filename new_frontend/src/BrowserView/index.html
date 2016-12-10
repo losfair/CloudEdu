@@ -20,6 +20,10 @@
             <div class="mdl-layout__header-row">
                 <!-- Title -->
                 <span class="mdl-layout-title goto-home">CloudEdu</span>
+                <div class="mdl-layout-spacer"></div>
+                <!-- No client service warning -->
+                <i class="material-icons header-icons show-if-no-client-service" onclick="tryShowNoClientServiceWarning()">warning</i>
+                <i class="material-icons header-icons" onclick="showSettings()">settings</i>
             </div>
         </header>
         <div class="mdl-layout__drawer">
@@ -35,6 +39,13 @@
                 <span>GitHub: <strong>losfair/CloudEdu</strong></span>
             </div>
         </div>
+        <dialog class="mdl-dialog" id="main-dialog">
+            <h4 class="mdl-dialog__title" id="main-dialog-title"></h4>
+            <div class="mdl-dialog__content" id="main-dialog-content"></div>
+            <div class="mdl-dialog__actions">
+                <button type="button" class="mdl-button" id="main-dialog-ok-button">OK</button>
+            </div>
+        </dialog>
         <main class="mdl-layout__content">
             <div id="main-container" class="page-content">
                 <link rel="stylesheet" type="text/css" href="css/nav-cards.css" />
@@ -104,6 +115,9 @@
             </div>
             <!-- System info -->
             <div id="system-info-container" class="page-content page-content-invisible">
+            </div>
+            <!-- Settings -->
+            <div id="settings-container" class="page-content page-content-invisible">
             </div>
             <div style="height: 50px"></div>
         </main>
