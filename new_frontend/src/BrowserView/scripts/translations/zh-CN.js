@@ -23,5 +23,6 @@ let texts = {
     ".text-drive-added": "新增驱动器:",
     ".text-drive-removed": "移除驱动器:",
     ".text-error-title": "错误",
-    ".text-no-alphaboard-server-address": "无法获取 AlphaBoard 云服务地址。"
+    ".text-no-alphaboard-server-address": "无法获取 AlphaBoard 云服务地址。",
+    ".text-external-program-return": "返回"
 }

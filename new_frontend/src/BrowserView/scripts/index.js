@@ -8,6 +8,7 @@ const url = require("url");
 const path = require("path");
 const child_process = require("child_process");
 const os = require("os");
+const fs = require("fs");
 const {ipcRenderer, shell} = require("electron");
 const $ = require("jquery");
 
@@ -113,8 +114,16 @@ function showSettings() {
     });
 }
 
+function openProgramSafe(cmd, args) {
+    ipcRenderer.sendSync("synchronous-message", {
+        "actionType": "openExternal",
+        "cmd": cmd,
+        "args": args
+    });
+}
+
 function openFileBrowser() {
-    child_process.spawn("explorer.exe", []);
+    openProgramSafe("explorer.exe", []);
 }
 
 function openAlphaBoard() {

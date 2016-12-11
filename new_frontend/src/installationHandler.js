@@ -1,8 +1,30 @@
 const {app} = require("electron");
 const fs = require("fs");
+const child_process = require("child_process");
 
 function copyFile(src, dst) {
-    fs.createReadStream(src).pipe(fs.createWriteStream(dst));
+    let ret = new Promise((cb, reject) => {
+        let reader = fs.createReadStream(src);
+        let writer = fs.createWriteStream(dst);
+        reader.on("error", reject);
+        writer.on("error", reject);
+        writer.on("close", () => {
+            cb();
+        });
+        reader.pipe(writer);
+    });
+    return () => {
+        return ret;
+    };
+}
+
+function runCommand(cmd, args) {
+    return () => {
+        return new Promise((cb) => {
+            let p = child_process.spawn(cmd, args);
+            p.on("close", cb);
+        });
+    }
 }
 
 module.exports.handleSquirrelEvent = () => {
@@ -36,11 +58,11 @@ module.exports.handleSquirrelEvent = () => {
     switch (squirrelEvent) {
         case '--squirrel-install':
         case '--squirrel-updated':
-            copyFile(path.join(__dirname, "default_config.json"), path.join(process.cwd(), "config.json"));
+            runCommand(path.join(__dirname, "bin\\Launcher.bat"), [path.join(__dirname, "bin\\InstallHelper.exe"), __dirname])()
+            .then(() => {
+                setTimeout(app.quit, 1000);
+            });
 
-            spawnUpdate(['--createShortcut', exeName]);
-
-            setTimeout(app.quit, 1000);
             return true;
 
         case '--squirrel-uninstall':
@@ -53,5 +75,6 @@ module.exports.handleSquirrelEvent = () => {
             app.quit();
             return true;
     }
+    console.log("Done");
     return false;
 };

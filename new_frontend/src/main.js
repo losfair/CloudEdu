@@ -9,12 +9,57 @@ if(installationHandler.handleSquirrelEvent()) {
     return;
 }
 
+const SBIE_PATH = "C:\\Program Files\\Sandboxie\\Start.exe";
 const appPaths = {
     "AlphaBoard": "BrowserView/AlphaBoard/index.html"
 };
 
 let browserWindow = null;
+let externalPanel = null;
 let appWindows = {};
+
+function tryOpenProgramInSandboxie(cmd, args) {
+    if(!fs.existsSync(SBIE_PATH)) return false;
+    let newArgs = ["/nosbiectrl", "/silent", cmd];
+    for(let item in args) {
+        newArgs.push(item);
+    }
+    child_process.spawn(SBIE_PATH, newArgs);
+    return true;
+}
+
+function openProgramSafe(cmd, args) {
+    if(tryOpenProgramInSandboxie(cmd, args) == false) child_process.spawn(cmd, args);
+}
+
+function terminateProgramsInSandboxie() {
+    if(!fs.existsSync(SBIE_PATH)) return false;
+    child_process.spawn(SBIE_PATH, ["/terminate"]);
+    return true;
+}
+
+function openExternalPanel() {
+    if(externalPanel) return;
+    externalPanel = new BrowserWindow({
+        "width": 50,
+        "height": 50,
+        "resizable": false,
+        "alwaysOnTop": true,
+        "x": 20,
+        "y": 20,
+        "minimizable": false,
+        "frame": false,
+        "titleBarStyle": "hidden"
+    });
+    externalPanel.loadURL(url.format({
+        "pathname": path.join(__dirname, "BrowserView/external_program_panel.html"),
+        "protocol": "file:",
+        "slashes": true
+    }));
+    externalPanel.on("closed", () => {
+        externalPanel = null;
+    });
+}
 
 function openAppWindow(appName) {
     let appPath = null;
@@ -72,14 +117,7 @@ function initWindow() {
 }
 
 app.on("ready", () => {
-    let args = [path.join(__dirname, "bin/ClientService.exe")];
-    if(!fs.existsSync(path.join(process.cwd(), "config.json"))) {
-        args.push(path.join(__dirname, "default_config.json"));
-    }
-    const launcher = child_process.spawn(path.join(__dirname, "bin/Launcher.bat"), args);
-    launcher.on("exit", () => {
-        initWindow();
-    });
+    initWindow();
 });
 
 app.on("window-all-closed", () => {
@@ -109,6 +147,30 @@ ipcMain.on("synchronous-message", (event, arg) => {
         openAppWindow(appName);
         event.returnValue = "OK";
         return;
+    } else if(actionType == "openExternal") {
+        try {
+            var cmd = arg.cmd;
+        } catch (e) {
+            var cmd = null;
+        }
+        if (!cmd) {
+            event.returnValue = "Invalid command";
+            return;
+        }
+        try {
+            var cmdArgs = arg.args;
+        } catch(e) {
+            var cmdArgs = null;
+        }
+        if(!cmdArgs) cmdArgs = [];
+
+        openProgramSafe(cmd, cmdArgs);
+        openExternalPanel();
+
+        event.returnValue = "OK";
+    } else if (actionType == "terminateExternals") {
+        terminateProgramsInSandboxie();
+        event.returnValue = "OK";
     } else {
         event.returnValue = "Unknown action type";
         return;
