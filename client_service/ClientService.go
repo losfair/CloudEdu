@@ -2,22 +2,27 @@ package main
 
 import (
     "os"
+    "log"
     "strconv"
     "net/http"
     "io/ioutil"
     "encoding/json"
     "DeviceManager"
+    "GeneralService"
+    "ConfigurationManager"
 )
 
-const CLIENT_SERVICE_VERSION = "0.1.1 20161210"
+const CLIENT_SERVICE_VERSION = "0.2.0 20161211"
 
 var cfg map[string]interface{}
+var isPaused bool = false
 
 func loadConfig() {
     cfg = make(map[string]interface{})
-    cfgFilePath := "config.json"
-    if len(os.Args) >= 2 {
-        cfgFilePath = os.Args[1]
+    cfgFilePath, err := ConfigurationManager.GetStringValue("cfgFilePath")
+    if err != nil || cfgFilePath == "" {
+        cfgFilePath = ConfigurationManager.DEFAULT_CONFIG_FILE_DIR + "config.json"
+        ConfigurationManager.SetStringValue("cfgFilePath", cfgFilePath)
     }
     cfgFileData, err := ioutil.ReadFile(cfgFilePath)
     if err != nil {
@@ -30,14 +35,23 @@ func loadConfig() {
 }
 
 func onPing(w http.ResponseWriter, r *http.Request) {
+    if isPaused {
+        return
+    }
     w.Write([]byte("Pong"))
 }
 
 func onGetVersion(w http.ResponseWriter, r *http.Request) {
+    if isPaused {
+        return
+    }
     w.Write([]byte(CLIENT_SERVICE_VERSION))
 }
 
 func onGetDriveList(w http.ResponseWriter, r *http.Request) {
+    if isPaused {
+        return
+    }
     drives := DeviceManager.GetDriveList()
     result, err := json.Marshal(drives)
     if err != nil {
@@ -48,6 +62,9 @@ func onGetDriveList(w http.ResponseWriter, r *http.Request) {
 }
 
 func onGetConfigItem(w http.ResponseWriter, r *http.Request) {
+    if isPaused {
+        return
+    }
     defer func() {
         if err := recover(); err != nil {
             w.Write([]byte("Failed"))
@@ -92,11 +109,45 @@ func onGetConfigItem(w http.ResponseWriter, r *http.Request) {
     }
 }
 
+func onServiceStart() {
+    go http.ListenAndServe("127.0.0.1:9033", nil)
+}
+
+func onServicePause() {
+    isPaused = true
+}
+
+func onServiceContinue() {
+    isPaused = false
+}
+
+func onServiceStop() {
+}
+
 func main() {
+    const svcName = "CloudEdu Client Service"
+    const svcDesc = "CloudEdu Client Service"
+
     loadConfig()
+
     http.HandleFunc("/ping", onPing)
     http.HandleFunc("/version", onGetVersion)
     http.HandleFunc("/config/get", onGetConfigItem)
     http.HandleFunc("/devices/drives/list", onGetDriveList)
-    http.ListenAndServe("127.0.0.1:9033", nil)
+
+    cmd := ""
+
+    if len(os.Args) >= 2 {
+        cmd = os.Args[1]
+    }
+
+    err := GeneralService.Run(svcName, svcDesc, cmd, &GeneralService.ServiceHandlers{
+        OnStart: onServiceStart,
+        OnStop: onServiceStop,
+        OnPause: onServicePause,
+        OnContinue: onServiceContinue,
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
 }
