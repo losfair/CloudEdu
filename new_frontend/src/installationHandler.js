@@ -60,6 +60,7 @@ module.exports.handleSquirrelEvent = () => {
         case '--squirrel-updated':
             runCommand(path.join(__dirname, "bin\\Launcher.bat"), [path.join(__dirname, "bin\\InstallHelper.exe"), __dirname])()
             .then(() => {
+                spawnUpdate(['--createShortcut', exeName]);
                 setTimeout(app.quit, 1000);
             });
 
