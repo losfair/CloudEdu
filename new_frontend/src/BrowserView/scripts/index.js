@@ -1,5 +1,5 @@
-const CURRENT_VERSION = "0.1.1";
-const CURRENT_BUILD = "20161210";
+const CURRENT_VERSION = "0.1.2";
+const CURRENT_BUILD = "20161211";
 const CLIENT_SERVICE_ADDR = "http://127.0.0.1:9033/";
 
 const request = require("request");
