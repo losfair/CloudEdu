@@ -3,6 +3,7 @@ package main
 import (
     "os"
     "log"
+    "time"
     "strconv"
     "net/http"
     "io/ioutil"
@@ -12,10 +13,12 @@ import (
     "ConfigurationManager"
 )
 
-const CLIENT_SERVICE_VERSION = "0.2.0 20161211"
+const CLIENT_SERVICE_VERSION = "0.2.0 20161212"
 
 var cfg map[string]interface{}
 var isPaused bool = false
+var driveListUpdateChan chan []string
+var currentDriveList []string
 
 func loadConfig() {
     cfg = make(map[string]interface{})
@@ -46,6 +49,23 @@ func onGetVersion(w http.ResponseWriter, r *http.Request) {
         return
     }
     w.Write([]byte(CLIENT_SERVICE_VERSION))
+}
+
+func onPollDriveListUpdate(w http.ResponseWriter, r *http.Request) {
+    if isPaused {
+        return
+    }
+    select {
+        case update := <-driveListUpdateChan:
+            respJson, err := json.Marshal(update)
+            if err != nil {
+                w.Write([]byte("Error"))
+                return
+            }
+            w.Write(respJson)
+        case <-time.After(30 * time.Second):
+            w.Write([]byte("Timeout"))
+    }
 }
 
 func onGetDriveList(w http.ResponseWriter, r *http.Request) {
@@ -109,6 +129,44 @@ func onGetConfigItem(w http.ResponseWriter, r *http.Request) {
     }
 }
 
+func onReboot(w http.ResponseWriter, r *http.Request) {
+    ret := DeviceManager.RequestSystemReboot()
+    if ret {
+        DeviceManager.DoSystemReboot()
+        w.Write([]byte("OK"))
+    } else {
+        w.Write([]byte("Failed"))
+    }
+}
+
+func onPoweroff(w http.ResponseWriter, r *http.Request) {
+    ret := DeviceManager.RequestSystemPoweroff()
+    if ret {
+        DeviceManager.DoSystemPoweroff()
+        w.Write([]byte("OK"))
+    } else {
+        w.Write([]byte("Failed"))
+    }
+}
+
+func updateDriveList() {
+    newDrives := DeviceManager.GetDriveList()
+    if len(newDrives) != len(currentDriveList) {
+        currentDriveList = newDrives
+        select {
+            case driveListUpdateChan <- newDrives:
+            default:
+        }
+    }
+}
+
+func runBackgroundTasks() {
+    for {
+        updateDriveList()
+        time.Sleep(1 * time.Second)
+    }
+}
+
 func onServiceStart() {
     go http.ListenAndServe("127.0.0.1:9033", nil)
 }
@@ -129,11 +187,16 @@ func main() {
     const svcDesc = "CloudEdu Client Service"
 
     loadConfig()
+    DeviceManager.Init()
+    go runBackgroundTasks()
 
     http.HandleFunc("/ping", onPing)
     http.HandleFunc("/version", onGetVersion)
     http.HandleFunc("/config/get", onGetConfigItem)
     http.HandleFunc("/devices/drives/list", onGetDriveList)
+    // http.HandleFunc("/devices/drives/poll", onPollDriveListUpdate) // Not working
+    http.HandleFunc("/system/power/reboot", onReboot)
+    http.HandleFunc("/system/power/poweroff", onPoweroff)
 
     cmd := ""
 

@@ -2,10 +2,10 @@ package main
 
 import (
     "os"
-    "log"
     "strings"
     "os/exec"
     "io/ioutil"
+    "WindowsUI"
 )
 
 const INSTALL_PREFIX = `C:\CloudEdu\`
@@ -18,37 +18,43 @@ func runClientServiceAction(action string) {
 func copyFile(src, dst string) {
     srcData, err := ioutil.ReadFile(src)
     if err != nil {
-        log.Fatal(err)
+        WindowsUI.MessageBoxFatal(err.Error())
     }
 
     if !strings.HasPrefix(dst, INSTALL_PREFIX) {
-        log.Fatal("Illegal destination path")
+        WindowsUI.MessageBoxFatal("Illegal destination path")
     }
 
     err = ioutil.WriteFile(dst, srcData, 0644)
     if err != nil {
-        log.Fatal(err)
+        WindowsUI.MessageBoxFatal(err.Error())
     }
 }
 
 func main() {
-    log.Println("Starting install helper")
-
     if len(os.Args) != 2 {
-        log.Fatal("Illegal usage")
+        WindowsUI.MessageBoxFatal("Illegal usage")
     }
 
     srcDir := os.Args[1] + `\`
+
+    if _, err := os.Stat(INSTALL_PREFIX + "ClientService.exe"); err == nil || !os.IsNotExist(err) {
+        userInput := WindowsUI.MessageBox("Notice", "Service already exists. Overwrite?", WindowsUI.MB_YESNO)
+        if userInput == WindowsUI.IDNO {
+            runClientServiceAction("install")
+            runClientServiceAction("start")
+            WindowsUI.MessageBox("Notice", "Service not updated.", 0)
+            return
+        }
+        runClientServiceAction("stop")
+        runClientServiceAction("remove")
+    }
 
     os.Mkdir(INSTALL_PREFIX, 0644)
 
     copyFile(srcDir + `bin\ClientService.exe`, INSTALL_PREFIX + "ClientService.exe")
     copyFile(srcDir + "default_config.json", INSTALL_PREFIX + "config.json")
 
-    runClientServiceAction("stop")
-    runClientServiceAction("remove")
     runClientServiceAction("install")
     runClientServiceAction("start")
-
-    log.Println("Done")
 }
