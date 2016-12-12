@@ -1,6 +1,7 @@
 package DeviceManager
 
 import (
+    "os/exec"
     "syscall"
     "WindowsUI"
 )
@@ -67,16 +68,26 @@ func RequestSystemPoweroff() bool {
 
 func DoSystemReboot() {
     Init()
-    _exitWindowsEx.Call(
+
+    cmd := exec.Command("shutdown.exe", "-r", "-t", "0")
+    cmd.Output()
+
+    // Fixme: Requires AdjustTokenPrivileges() to work
+    /*_exitWindowsEx.Call(
         uintptr(0x02), // EWX_REBOOT
         uintptr(0),
-    )
+    )*/
 }
 
 func DoSystemPoweroff() {
     Init()
-    _exitWindowsEx.Call(
+
+    cmd := exec.Command("shutdown.exe", "-s", "-t", "0")
+    cmd.Output()
+
+    // Fixme: Requires AdjustTokenPrivileges() to work
+    /*_exitWindowsEx.Call(
         uintptr(0x08), // EWX_POWEROFF
         uintptr(0),
-    )
+    )*/
 }
