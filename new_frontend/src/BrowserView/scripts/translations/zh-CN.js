@@ -1,5 +1,7 @@
 let texts = {
     "#nav-button-goto-home": "主界面",
+    "#nav-button-reboot": "重启",
+    "#nav-button-poweroff": "关机",
     "#nav-button-exit": "退出",
     ".text-warning-title": "警告",
     ".text-warning-no-client-service": "客户端服务未运行。部分功能将不可用。",

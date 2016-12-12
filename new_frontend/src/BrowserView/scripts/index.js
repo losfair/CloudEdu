@@ -1,5 +1,5 @@
-const CURRENT_VERSION = "0.1.2";
-const CURRENT_BUILD = "20161211";
+const CURRENT_VERSION = "0.1.3";
+const CURRENT_BUILD = "20161212";
 const CLIENT_SERVICE_ADDR = "http://127.0.0.1:9033/";
 
 const request = require("request");
@@ -188,6 +188,14 @@ function loadStylesFromConfig() {
     })
 }
 
+function doReboot() {
+    request.get(CLIENT_SERVICE_ADDR + "system/power/reboot", () => {});
+}
+
+function doPoweroff() {
+    request.get(CLIENT_SERVICE_ADDR + "system/power/poweroff", () => {});
+}
+
 window.addEventListener("load", () => {
     updateTexts();
     checkClientService();
@@ -196,8 +204,7 @@ window.addEventListener("load", () => {
         $(".page-content").fadeOut();
         $("#main-container").fadeIn();
     });
-    $(".do-exit").click(() => {
-        window.close();
-    });
+    $(".do-reboot").click(doReboot);
+    $(".do-poweroff").click(doPoweroff);
     startCheckDriveChange();
 });
