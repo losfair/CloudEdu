@@ -1,4 +1,4 @@
-const CURRENT_VERSION = "0.1.3";
+const CURRENT_VERSION = "0.1.4";
 const CURRENT_BUILD = "20161213";
 const CLIENT_SERVICE_ADDR = "http://127.0.0.1:9033/";
 

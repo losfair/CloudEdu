@@ -15,7 +15,7 @@ import (
     "ConfigurationManager"
 )
 
-const CLIENT_SERVICE_VERSION = "0.2.0 20161213"
+const CLIENT_SERVICE_VERSION = "0.2.1 20161213"
 
 var deviceId string
 var cfg map[string]interface{}
