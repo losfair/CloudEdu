@@ -1,5 +1,5 @@
 const CURRENT_VERSION = "0.1.3";
-const CURRENT_BUILD = "20161212";
+const CURRENT_BUILD = "20161213";
 const CLIENT_SERVICE_ADDR = "http://127.0.0.1:9033/";
 
 const request = require("request");
@@ -20,6 +20,7 @@ let CURRENT_PLATFORM = os.platform();
 let CURRENT_OS_RELEASE = os.release();
 let CURRENT_USERNAME = os.userInfo().username;
 let CLIENT_SERVICE_VERSION = "Unknown";
+let DEVICE_ID = "";
 
 function updateTexts() {
     for(var key in texts) {
@@ -63,10 +64,14 @@ function tryShowNoClientServiceWarning() {
     showDialog(texts[".text-warning-title"], texts[".text-warning-no-client-service"]);
 }
 
-function getClientServiceVersion() {
+function getClientServiceInfo() {
     request.get(CLIENT_SERVICE_ADDR + "version", (err, resp, body) => {
         if(err || !body) return;
         CLIENT_SERVICE_VERSION = body;
+    });
+    request.get(CLIENT_SERVICE_ADDR + "id", (err, resp, body) => {
+        if(err || !body) return;
+        DEVICE_ID = body;
     });
 }
 
@@ -75,7 +80,7 @@ function checkClientService() {
         if(err || body != "Pong") clientServiceRunning = false;
         else {
             clientServiceRunning = true;
-            getClientServiceVersion();
+            getClientServiceInfo();
         }
         if(clientServiceRunning) $(".show-if-no-client-service").hide();
         else $(".show-if-no-client-service").show();
@@ -96,6 +101,7 @@ function showSystemInfo() {
         $(".current-version").text(CURRENT_VERSION);
         $(".current-build").text(CURRENT_BUILD);
         $(".current-client-service-version").text(CLIENT_SERVICE_VERSION);
+        $(".current-device-id").text(DEVICE_ID.substr(0, 8));
         $(".current-cpu-model").text(CURRENT_CPU_MODEL);
         $(".current-platform").text(CURRENT_PLATFORM);
         $(".current-os-release").text(CURRENT_OS_RELEASE);

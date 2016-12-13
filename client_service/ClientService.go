@@ -7,18 +7,36 @@ import (
     "strconv"
     "net/http"
     "io/ioutil"
+    "crypto/rand"
+    "encoding/hex"
     "encoding/json"
     "DeviceManager"
     "GeneralService"
     "ConfigurationManager"
 )
 
-const CLIENT_SERVICE_VERSION = "0.2.0 20161212"
+const CLIENT_SERVICE_VERSION = "0.2.0 20161213"
 
+var deviceId string
 var cfg map[string]interface{}
 var isPaused bool = false
 var driveListUpdateChan chan []string
 var currentDriveList []string
+
+func generateRandomString(n int) string {
+    r := make([]byte, n)
+    rand.Read(r)
+    return hex.EncodeToString(r)
+}
+
+func loadDeviceId() {
+    currentDeviceId, err := ConfigurationManager.GetStringValue("deviceId")
+    if err != nil || currentDeviceId == "" {
+        currentDeviceId = generateRandomString(32)
+        ConfigurationManager.SetStringValue("deviceId", currentDeviceId)
+    }
+    deviceId = currentDeviceId
+}
 
 func loadConfig() {
     cfg = make(map[string]interface{})
@@ -79,6 +97,13 @@ func onGetDriveList(w http.ResponseWriter, r *http.Request) {
         return
     }
     w.Write(result)
+}
+
+func onGetDeviceId(w http.ResponseWriter, r *http.Request) {
+    if isPaused {
+        return
+    }
+    w.Write([]byte(deviceId))
 }
 
 func onGetConfigItem(w http.ResponseWriter, r *http.Request) {
@@ -186,15 +211,17 @@ func main() {
     const svcName = "CloudEdu Client Service"
     const svcDesc = "CloudEdu Client Service"
 
+    loadDeviceId()
     loadConfig()
     DeviceManager.Init()
     go runBackgroundTasks()
 
     http.HandleFunc("/ping", onPing)
     http.HandleFunc("/version", onGetVersion)
+    http.HandleFunc("/id", onGetDeviceId)
     http.HandleFunc("/config/get", onGetConfigItem)
     http.HandleFunc("/devices/drives/list", onGetDriveList)
-    // http.HandleFunc("/devices/drives/poll", onPollDriveListUpdate) // Not working
+    // http.HandleFunc("/devices/drives/poll", onPollDriveListUpdate) // Fixme: Not working
     http.HandleFunc("/system/power/reboot", onReboot)
     http.HandleFunc("/system/power/poweroff", onPoweroff)
 

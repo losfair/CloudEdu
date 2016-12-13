@@ -14,6 +14,7 @@ let texts = {
     ".text-app-version": "CloudEdu 版本",
     ".text-app-build": "构建编号",
     ".text-client-service-version": "客户端服务版本",
+    ".text-device-id": "设备 ID",
     ".text-node-version": "Node 版本",
     ".text-cpu-model": "CPU 型号",
     ".text-current-platform": "操作系统类型",
