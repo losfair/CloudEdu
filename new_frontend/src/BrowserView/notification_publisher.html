@@ -1,0 +1,19 @@
+<style>
+.notification-card {
+    margin-bottom: 50px;
+}
+#notifications {
+    height: 350px;
+    overflow-y: scroll;
+}
+</style>
+
+<form action="javascript:;">
+    <div class="mdl-textfield mdl-js-textfield">
+        <textarea class="mdl-textfield__input" type="text" rows="10" id="new-notification"></textarea>
+        <label class="mdl-textfield__label" for="new-notification">Text...</label><br><br>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent text-do-notification-publish do-notification-publish"></button>
+    </div>
+</form>
+<div id="notifications"></div>
+<script src="scripts/notification_publisher.js"></script>

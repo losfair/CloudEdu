@@ -120,6 +120,14 @@ function showSettings() {
     });
 }
 
+function openNotificationPublisher() {
+    $(".page-content").fadeOut()
+    $("#notification-publisher-container").load("notification_publisher.html", () => {
+        updateTexts();
+        $("#notification-publisher-container").fadeIn()
+    });
+}
+
 function openProgramSafe(cmd, args) {
     ipcRenderer.sendSync("synchronous-message", {
         "actionType": "openExternal",

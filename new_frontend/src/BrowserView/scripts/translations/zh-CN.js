@@ -27,5 +27,9 @@ let texts = {
     ".text-drive-removed": "移除驱动器:",
     ".text-error-title": "错误",
     ".text-no-alphaboard-server-address": "无法获取 AlphaBoard 云服务地址。",
-    ".text-external-program-return": "返回"
+    ".text-external-program-return": "返回",
+    ".text-do-notification-publish": "发布",
+    ".text-unable-to-get-service-url": "无法获取云服务地址。",
+    ".text-failed-to-publish-notification": "通知发布失败。",
+    ".text-notification-published": "通知已发布。"
 }
