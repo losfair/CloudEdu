@@ -59,6 +59,13 @@ function showNotification(content) {
     }, 5000);
 }
 
+function showGlobalNotification(content) {
+    ipcRenderer.sendSync("synchronous-message", {
+        "actionType": "showGlobalNotification",
+        "content": content
+    });
+}
+
 function tryShowNoClientServiceWarning() {
     if(clientServiceRunning) return;
     showDialog(texts[".text-warning-title"], texts[".text-warning-no-client-service"]);
@@ -179,7 +186,7 @@ function startCheckDriveChange() {
                         newDriveNames += " " + key;
                         drives[key] = true;
                     }
-                    if(!isFirstDriveCheck) showNotification(texts[".text-drive-added"] + newDriveNames);
+                    if(!isFirstDriveCheck) showGlobalNotification(texts[".text-drive-added"] + newDriveNames);
                 } else {
                     for(let key in newDrives) {
                         delete drives[key];
@@ -189,7 +196,7 @@ function startCheckDriveChange() {
                         newDriveNames += " " + key;
                     }
                     drives = newDrives;
-                    if(!isFirstDriveCheck) showNotification(texts[".text-drive-removed"] + newDriveNames);
+                    if(!isFirstDriveCheck) showGlobalNotification(texts[".text-drive-removed"] + newDriveNames);
                 }
             }
             isFirstDriveCheck = false;

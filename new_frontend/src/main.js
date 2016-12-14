@@ -3,6 +3,7 @@ const url = require("url");
 const child_process = require("child_process");
 const path = require("path");
 const fs = require("fs");
+const util = require("util");
 const installationHandler = require("./installationHandler.js");
 
 if(installationHandler.handleSquirrelEvent()) {
@@ -16,7 +17,9 @@ const appPaths = {
 
 let browserWindow = null;
 let externalPanel = null;
+let globalNotification = null;
 let appWindows = {};
+let mainScreen;
 
 function tryOpenProgramInSandboxie(cmd, args) {
     if(!fs.existsSync(SBIE_PATH)) return false;
@@ -38,6 +41,33 @@ function terminateProgramsInSandboxie() {
     return true;
 }
 
+function showGlobalNotification(content) {
+    if(globalNotification) return;
+    if(!content || !util.isString(content)) return;
+    globalNotification = new BrowserWindow({
+        "width": 350,
+        "height": 100,
+        "resizable": false,
+        "alwaysOnTop": true,
+        "x": 30,
+        "y": mainScreen.size.height - 130,
+        "minimizable": false,
+        "frame": false,
+        "titleBarStyle": "hidden"
+    });
+    globalNotification.loadURL(url.format({
+        "pathname": path.join(__dirname, "BrowserView/global_notification.html"),
+        "protocol": "file:",
+        "slashes": true
+    }));
+    globalNotification.webContents.on("did-finish-load", () => {
+        globalNotification.webContents.send("notification-content", content);
+    });
+    globalNotification.on("closed", () => {
+        globalNotification = null;
+    });
+}
+
 function openExternalPanel() {
     if(externalPanel) return;
     externalPanel = new BrowserWindow({
@@ -45,7 +75,7 @@ function openExternalPanel() {
         "height": 50,
         "resizable": false,
         "alwaysOnTop": true,
-        "x": 20,
+        "x": mainScreen.size.width - 70,
         "y": 20,
         "minimizable": false,
         "frame": false,
@@ -95,6 +125,8 @@ function openAppWindow(appName) {
 }
 
 function initWindow() {
+    const {screen} = require("electron");
+    mainScreen = screen.getPrimaryDisplay();
     browserWindow = new BrowserWindow({
         "width": 0,
         "height": 0,
@@ -171,7 +203,19 @@ ipcMain.on("synchronous-message", (event, arg) => {
     } else if (actionType == "terminateExternals") {
         terminateProgramsInSandboxie();
         event.returnValue = "OK";
-    } else {
+    } else if(actionType == "showGlobalNotification") {
+        try {
+            var content = arg.content;
+        } catch(e) {
+            var content = null;
+        }
+        if(!content) {
+            event.returnValue = "No content";
+            return;
+        }
+        showGlobalNotification(content);
+        event.returnValue = "OK";
+    }else {
         event.returnValue = "Unknown action type";
         return;
     }

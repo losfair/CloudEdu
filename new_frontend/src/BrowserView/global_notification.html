@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <style>
+            body {
+                background-color: rgb(0, 150, 136);
+                color: #FFFFFF;
+            }
+            #notification {
+                margin-top: 20px;
+                margin-left: 20px;
+                margin-bottom: 20px;
+                margin-right: 20px;
+                font-size: 24px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="notification"></div>
+        <script>
+            const {ipcRenderer} = require("electron");
+            ipcRenderer.on("notification-content", (e, msg) => {
+                document.getElementById("notification").innerHTML = msg;
+            });
+            document.body.addEventListener("click", () => {
+                window.close();
+            });
+            setTimeout(window.close, 5000);
+        </script>
+    </body>
+</html>
