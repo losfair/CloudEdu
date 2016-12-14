@@ -31,5 +31,7 @@ let texts = {
     ".text-do-notification-publish": "发布",
     ".text-unable-to-get-service-url": "无法获取云服务地址。",
     ".text-failed-to-publish-notification": "通知发布失败。",
-    ".text-notification-published": "通知已发布。"
+    ".text-notification-published": "通知已发布。",
+    ".text-notification-loading": "正在加载通知",
+    ".text-expand-new-notification-form": "展开"
 }

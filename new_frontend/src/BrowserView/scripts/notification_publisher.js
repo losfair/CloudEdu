@@ -25,6 +25,18 @@ function loadNotifications() {
             newElem.className = "notification-card";
             $(newElem).text(item.content);
             $(newElem).html("<strong>" + new Date(item.time).toLocaleString() + "</strong><br>" + $(newElem).html());
+            (() => {
+                let currentElem = newElem;
+                $(currentElem).click(() => {
+                    $("#new-notification-form").hide();
+                    $(".expand-new-notification-form").show();
+                    $("#notifications").css("height", window.innerHeight - 200);
+                    $(".notification-card").css("line-height", "20px");
+                    $(".notification-card").css("font-size", "16px");
+                    $(currentElem).css("line-height", "60px");
+                    $(currentElem).css("font-size", "56px");
+                });
+            })();
             document.getElementById("notifications").appendChild(newElem);
         }
     })
@@ -40,7 +52,12 @@ new Promise((cb) => {
         throw texts[".text-unable-to-get-service-url"];
     }
     cloudServiceUrl = svcUrl;
+    $("#notifications").text(texts[".text-notification-loading"]);
     loadNotifications();
+    $(".expand-new-notification-form").click(() => {
+        $(".expand-new-notification-form").hide();
+        $("#new-notification-form").show();
+    })
     $(".do-notification-publish").click(() => {
         let text = $("#new-notification").val();
         request.post(cloudServiceUrl + "notification/publish", {
@@ -54,6 +71,7 @@ new Promise((cb) => {
                 return;
             }
             showDialog("Notice", texts[".text-notification-published"]);
+            loadNotifications();
         });
     })
 });

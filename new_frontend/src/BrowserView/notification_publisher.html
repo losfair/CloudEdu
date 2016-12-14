@@ -2,18 +2,24 @@
 .notification-card {
     margin-bottom: 50px;
 }
+.expand-new-notification-form {
+    display: none;
+}
 #notifications {
+    user-select: text;
+    -webkit-user-select: text;
     height: 350px;
     overflow-y: scroll;
 }
 </style>
 
-<form action="javascript:;">
+<form action="javascript:;" id="new-notification-form">
     <div class="mdl-textfield mdl-js-textfield">
         <textarea class="mdl-textfield__input" type="text" rows="10" id="new-notification"></textarea>
         <label class="mdl-textfield__label" for="new-notification">Text...</label><br><br>
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent text-do-notification-publish do-notification-publish"></button>
     </div>
 </form>
+<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent text-expand-new-notification-form expand-new-notification-form" style="margin-bottom: 20px"></button>
 <div id="notifications"></div>
 <script src="scripts/notification_publisher.js"></script>

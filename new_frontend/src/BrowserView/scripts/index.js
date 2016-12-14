@@ -1,5 +1,5 @@
-const CURRENT_VERSION = "0.1.4";
-const CURRENT_BUILD = "20161213";
+const CURRENT_VERSION = "0.1.5";
+const CURRENT_BUILD = "20161214";
 const CLIENT_SERVICE_ADDR = "http://127.0.0.1:9033/";
 
 const request = require("request");
@@ -206,7 +206,11 @@ function startCheckDriveChange() {
 
 function startTimerUpdate() {
     let currentTime = new Date();
-    let timeString = currentTime.getHours() + ":" + currentTime.getMinutes();
+    let currentHours = currentTime.getHours().toString();
+    let currentMinutes = currentTime.getMinutes().toString();
+    if(currentHours.length == 1) currentHours = "0" + currentHours;
+    if(currentMinutes.length == 1) currentMinutes = "0" + currentMinutes;
+    let timeString = currentHours + ":" + currentMinutes;
     $(".current-time").text(timeString);
     setTimeout(startTimerUpdate, 1000);
 }
