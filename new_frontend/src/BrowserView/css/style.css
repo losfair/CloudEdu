@@ -60,3 +60,12 @@ body {
 .system-info-list-item-value {
     color: #000000;
 }
+
+#local-app {
+    position: fixed;
+    top: 0px;
+    left: -100px;
+    bottom: 0px;
+    width: 100%;
+    z-index: 10;
+}

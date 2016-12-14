@@ -145,10 +145,12 @@ function openAlphaBoard() {
         if(!v) showDialog(texts[".text-error-title"], texts[".text-no-alphaboard-server-address"]);
         else {
             localStorage["AlphaBoard-ServerAddr"] = v;
-            ipcRenderer.sendSync("synchronous-message", {
+            /*ipcRenderer.sendSync("synchronous-message", {
                 "actionType": "openApp",
                 "appName": "AlphaBoard"
-            });
+            });*/
+            $("#local-app").attr("src","AlphaBoard/index.html");
+            $("#local-app").fadeIn();
         }
     })
 }

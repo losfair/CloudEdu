@@ -1,4 +1,4 @@
-const $ = require("jquery");
+//const $ = require("jquery");
 
 var drawingCxt;
 var cvsHeight,cvsWidth;
@@ -623,7 +623,7 @@ function switchFullScreen() {
 }
 
 function showAboutInfo() {
-    var aboutInfo = "AlphaBoard nightly-20161023\n\nCopyright &copy; 2016 Heyang Zhou.\nLicensed under LGPL v3.";
+    var aboutInfo = "AlphaBoard nightly-20161214\n\nCopyright &copy; 2016 Heyang Zhou.\nLicensed under LGPL v3.";
     if(!enableNodeExtensions) showPopup("<pre>"+aboutInfo+"</pre>");
     else {
         var request = require("request");

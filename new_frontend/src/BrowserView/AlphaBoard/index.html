@@ -4,6 +4,7 @@
         <meta name="ViewPort" content="initial-scale=1, minimum-scale=1, width=device-width"/>
         <title>AlphaBoard</title>
         <link rel="stylesheet" href="index.css" />
+        <script src="../scripts/jquery.min.js"></script>
         <script src="index.js"></script>
     </head>
     <body>
@@ -17,9 +18,7 @@
             <div onclick="commitActions()">提交</div>
             <div onclick="cancelStep()">撤销</div>
             <div onclick="toggleActionList()">编辑</div>
-            <div onclick="switchFullScreen()">全屏</div>
             <div onclick="showAboutInfo()">关于</div>
-            <div onclick="window.close()">退出</div>
         </div>
         <div id="last-commit">上次提交: <code id="last-commit-id">root</code></div>
         <div id="cloud-status">云服务状态: <font id="cloud-status-text">未知</font></div>
