@@ -197,6 +197,13 @@ function startCheckDriveChange() {
     })
 }
 
+function startTimerUpdate() {
+    let currentTime = new Date();
+    let timeString = currentTime.getHours() + ":" + currentTime.getMinutes();
+    $(".current-time").text(timeString);
+    setTimeout(startTimerUpdate, 1000);
+}
+
 function loadStylesFromConfig() {
     getConfigItem("backgroundImage", (result) => {
         if(!result) return;
@@ -223,4 +230,5 @@ window.addEventListener("load", () => {
     $(".do-reboot").click(doReboot);
     $(".do-poweroff").click(doPoweroff);
     startCheckDriveChange();
+    startTimerUpdate();
 });

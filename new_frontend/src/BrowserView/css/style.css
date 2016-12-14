@@ -45,6 +45,10 @@ body {
     margin-left: 10px;
 }
 
+#header-clock {
+    margin-left: 15px;
+}
+
 .page-content {
     position: fixed;
     width: 100%;
