@@ -1,0 +1,92 @@
+<div class="mdl-typography--display-2 text-score-lookup-title inner-page-title"></div>
+
+<table id="settings-content" cellspacing="10">
+    <tr>
+        <td class="text-score-lookup-service"></td>
+        <td class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="score-lookup-service-name" value="zhixue" />
+            <label class="mdl-textfield__label text-score-lookup-service" for="score-lookup-service-name"></label>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-score-lookup-username"></td>
+        <td class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="score-lookup-username" />
+            <label class="mdl-textfield__label text-score-lookup-username" for="score-lookup-username"></label>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-score-lookup-password"></td>
+        <td class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="password" id="score-lookup-password" />
+            <label class="mdl-textfield__label text-score-lookup-password" for="score-lookup-password"></label>
+        </td>
+    </tr>
+</table>
+<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent text-score-lookup-login score-lookup-login-button"></button>
+
+<div id="score-lookup-exam-details" style="display: none; margin-top: 30px">
+    <span class="text-score-lookup-user-id"></span>:&nbsp;<span id="score-lookup-user-id"></span><br>
+    <span id="score-lookup-last-desc"></span>:&nbsp;<span id="score-lookup-last-total"></span><br>
+</div>
+
+<script>
+    if(lookupScoreToken === undefined) {
+        var lookupScoreToken = "";
+    }
+    $(".score-lookup-login-button").click(() => {
+        let svc = $("#score-lookup-service-name").val();
+        let user = $("#score-lookup-username").val();
+        let pw = $("#score-lookup-password").val();
+        getConfigItem("cloudServiceUrl", (csurl) => {
+            if(!csurl) {
+                showDialog("Error", texts[".text-unable-to-get-service-url"]);
+                return;
+            }
+            new Promise((cb) => {
+                request.post(csurl + "et/login/" + svc, {
+                    "json": {
+                        "loginName": user,
+                        "password": pw
+                    }
+                }, (err, resp, body) => {
+                    if(err || !body) cb(null);
+                    else cb(body);
+                })
+            }).then((data) => {
+                if(!data) {
+                    showDialog("Error", "Unable to parse response");
+                    return;
+                }
+                lookupScoreToken = data.token;
+                $("#score-lookup-user-id").text(data.user_id);
+                $("#score-lookup-exam-details").fadeIn();
+                return new Promise((cb) => {
+                    request.post(csurl + "et/exams/list", {
+                        "json": {
+                            "token": lookupScoreToken
+                        }
+                    }, (err, resp, body) => {
+                        if(err || !body) cb(null);
+                        else cb(body);
+                    });
+                });
+            }).then((data) => {
+                if(!data) {
+                    showDialog("Error", "Unable to fetch exam list");
+                    return;
+                }
+                let exams = data;
+                if(!exams.length) {
+                    showDialog("Error", "No exams");
+                    return;
+                }
+                let lastExam = exams[exams.length - 1];
+                $("#score-lookup-last-desc").text(lastExam.name + " 的总分");
+                $("#score-lookup-last-total").text(lastExam.score);
+            })
+        })
+    })
+
+    updateTexts();
+</script>

@@ -222,6 +222,12 @@ function loadStylesFromConfig() {
     })
 }
 
+function showLookupScore() {
+    $(".page-content").fadeOut();
+    $("#lookup-score-container").load("lookup_score.html")
+    $("#lookup-score-container").fadeIn();
+}
+
 function doReboot() {
     request.get(CLIENT_SERVICE_ADDR + "system/power/reboot", () => {});
 }
@@ -237,6 +243,9 @@ window.addEventListener("load", () => {
     $(".goto-home").click(() => {
         $(".page-content").fadeOut();
         $("#main-container").fadeIn();
+    });
+    $(".lookup-score").click(() => {
+        showLookupScore();
     });
     $(".do-reboot").click(doReboot);
     $(".do-poweroff").click(doPoweroff);

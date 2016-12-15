@@ -1,5 +1,6 @@
 let texts = {
     "#nav-button-goto-home": "主界面",
+    "#nav-button-lookup-score": "成绩查询",
     "#nav-button-reboot": "重启",
     "#nav-button-poweroff": "关机",
     "#nav-button-exit": "退出",
@@ -33,5 +34,12 @@ let texts = {
     ".text-failed-to-publish-notification": "通知发布失败。",
     ".text-notification-published": "通知已发布。",
     ".text-notification-loading": "正在加载通知",
-    ".text-expand-new-notification-form": "展开"
+    ".text-expand-new-notification-form": "展开",
+    ".text-score-lookup-title": "成绩查询",
+    ".text-score-lookup-service": "服务类型",
+    ".text-score-lookup-username": "用户名",
+    ".text-score-lookup-password": "密码",
+    ".text-score-lookup-login": "登录",
+    ".text-score-lookup-user-id": "用户 ID",
+    ".text-score-lookup-last-total": "最近一次总分"
 }
