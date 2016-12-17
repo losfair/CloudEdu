@@ -41,5 +41,11 @@ let texts = {
     ".text-score-lookup-password": "密码",
     ".text-score-lookup-login": "登录",
     ".text-score-lookup-user-id": "用户 ID",
-    ".text-score-lookup-last-total": "最近一次总分"
+    ".text-score-lookup-last-total": "最近一次总分",
+    ".text-notice-title": "提示",
+    ".text-login-failed": "登录失败。",
+    ".text-unable-to-parse-response": "数据解析失败。",
+    ".text-score-lookup-unable-to-fetch-exam-list": "无法获取考试列表。",
+    ".text-score-lookup-unable-to-fetch-exam-details": "无法获取考试详情。",
+    ".text-score-lookup-no-exams": "当前无考试。"
 }

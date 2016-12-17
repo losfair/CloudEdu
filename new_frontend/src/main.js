@@ -215,7 +215,7 @@ ipcMain.on("synchronous-message", (event, arg) => {
         }
         showGlobalNotification(content);
         event.returnValue = "OK";
-    }else {
+    } else {
         event.returnValue = "Unknown action type";
         return;
     }

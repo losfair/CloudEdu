@@ -42,7 +42,7 @@
         let pw = $("#score-lookup-password").val();
         getConfigItem("cloudServiceUrl", (csurl) => {
             if(!csurl) {
-                showDialog("Error", texts[".text-unable-to-get-service-url"]);
+                showDialog(texts[".text-error-title"], texts[".text-unable-to-get-service-url"]);
                 return;
             }
             $(".score-lookup-login-button").fadeOut(() => {
@@ -60,10 +60,10 @@
                 })
             }).then((data) => {
                 if(!data) {
-                    throw "Unable to parse response";
+                    throw texts[".text-unable-to-parse-response"];
                 }
                 if(!data.token) {
-                    throw "Login failed";
+                    throw texts[".text-login-failed"];
                 }
                 lookupScoreToken = data.token;
                 $("#score-lookup-user-id").text(data.user_id);
@@ -80,14 +80,14 @@
                 });
             }).then((data) => {
                 if(!data) {
-                    throw "Unable to fetch exam list";
+                    throw texts[".text-score-lookup-unable-to-fetch-exam-list"];
                 }
                 let exams = data;
                 if(!exams.length) {
-                    throw "No exams";
+                    throw texts[".text-score-lookup-no-exams"];
                 }
                 let lastExam = exams[exams.length - 1];
-                $("#score-lookup-last-desc").text(lastExam.name + " 的总分");
+                $("#score-lookup-last-desc").text(lastExam.name);
                 $("#score-lookup-last-total").text(lastExam.score);
                 return new Promise((cb) => {
                     request.post(csurl + "et/exams/details", {
@@ -105,7 +105,7 @@
                 })
             }).then((details) => {
                 if(!details || !details.length) {
-                    throw "Unable to fetch exam details";
+                    throw texts[".text-score-lookup-unable-to-fetch-exam-details"];
                 }
                 let targetElem = document.getElementById("score-lookup-exam-details");
                 targetElem.innerHTML = "";
@@ -119,7 +119,7 @@
                 $("#score-lookup-loading").fadeOut(() => {
                     $(".score-lookup-login-button").fadeIn();
                 });
-                showDialog("Error", e.toString());
+                showDialog(texts[".text-error-title"], e.toString());
             });
         })
     })

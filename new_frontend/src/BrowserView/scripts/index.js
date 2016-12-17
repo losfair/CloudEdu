@@ -1,5 +1,5 @@
-const CURRENT_VERSION = "0.1.5";
-const CURRENT_BUILD = "20161214";
+const CURRENT_VERSION = "0.1.6";
+const CURRENT_BUILD = "20161217";
 const CLIENT_SERVICE_ADDR = "http://127.0.0.1:9033/";
 
 const request = require("request");
@@ -21,6 +21,8 @@ let CURRENT_OS_RELEASE = os.release();
 let CURRENT_USERNAME = os.userInfo().username;
 let CLIENT_SERVICE_VERSION = "Unknown";
 let DEVICE_ID = "";
+
+let templateCache = {};
 
 function updateTexts() {
     for(var key in texts) {
@@ -95,6 +97,24 @@ function checkClientService() {
     });
 }
 
+function loadTemplate(filename, params, callback) {
+    if(!params) params = {};
+    let fileData = fs.readFileSync(filename, "utf-8");
+    request.post(CLIENT_SERVICE_ADDR + "render_template", {
+        "form": JSON.stringify({
+            "template": fileData,
+            "params": params
+        })
+    }, (err, resp, body) => {
+        if(err) callback(null);
+        else {
+            if(body.substr(0, 8) != "function") callback(null);
+            eval("var renderer = " + body);
+            callback(renderer);
+        }
+    });
+}
+
 function getUptimeString() {
     let uptime = new Date(os.uptime() * 1000);
     let uptimeString = uptime.getHours() + "h " + uptime.getMinutes() + "m " + uptime.getSeconds() + "s";
@@ -130,11 +150,10 @@ function showSettings() {
 
 function openNotificationPublisher() {
     $(".page-content").fadeOut()
-    $("#notification-publisher-container").load("notification_publisher.html", () => {
-        updateTexts();
-        componentHandler.upgradeAllRegistered();
-        $("#notification-publisher-container").fadeIn()
-    });
+    $("#notification-publisher-container").html(templateCache["notification_publisher"]());
+    updateTexts();
+    componentHandler.upgradeAllRegistered();
+    $("#notification-publisher-container").fadeIn()
 }
 
 function openProgramSafe(cmd, args) {
@@ -240,7 +259,19 @@ function doPoweroff() {
     request.get(CLIENT_SERVICE_ADDR + "system/power/poweroff", () => {});
 }
 
+function loadTemplateFileToCacheLocalized(name) {
+    loadTemplate(path.join(__dirname, name + ".omt"), om_texts, (result) => {
+        if(!result) return;
+        templateCache[name] = result;
+    })
+}
+
+function initTemplateCache() {
+    loadTemplateFileToCacheLocalized("notification_publisher");
+}
+
 window.addEventListener("load", () => {
+    initTemplateCache();
     updateTexts();
     checkClientService();
     loadStylesFromConfig();

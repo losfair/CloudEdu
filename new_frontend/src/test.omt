@@ -1,0 +1,9 @@
+head
+	title => "Hello world"
+body
+	div
+		p .testclass1 .testclass2 @invisible=[isInvisible] => [text1]
+			strong => "Test string 1"
+		a id=[text1] href="str" => [text2]
+		br
+		_ => "Test string 2"

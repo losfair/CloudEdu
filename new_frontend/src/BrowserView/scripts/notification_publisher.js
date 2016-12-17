@@ -64,7 +64,7 @@ new Promise((cb) => {
     });
 }).then((svcUrl) => {
     if(svcUrl == null) {
-        showDialog("Error", texts[".text-unable-to-get-service-url"]);
+        showDialog(texts[".text-error-title"], texts[".text-unable-to-get-service-url"]);
         throw texts[".text-unable-to-get-service-url"];
     }
     cloudServiceUrl = svcUrl;
@@ -83,10 +83,10 @@ new Promise((cb) => {
             }
         }, (err, resp, body) => {
             if(err || !body || body != "OK") {
-                showDialog("Error", texts[".text-failed-to-publish-notification"]);
+                showDialog(texts[".text-error-title"], texts[".text-failed-to-publish-notification"]);
                 return;
             }
-            showDialog("Notice", texts[".text-notification-published"]);
+            showDialog(texts[".text-notice-title"], texts[".text-notification-published"]);
             loadNotifications();
         });
     })
