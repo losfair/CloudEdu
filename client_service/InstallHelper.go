@@ -53,6 +53,7 @@ func main() {
     os.Mkdir(INSTALL_PREFIX, 0644)
 
     copyFile(srcDir + `bin\ClientService.exe`, INSTALL_PREFIX + "ClientService.exe")
+    copyFile(srcDir + `bin\libOxygenMark.dll`, INSTALL_PREFIX + "libOxygenMark.dll")
     copyFile(srcDir + "default_config.json", INSTALL_PREFIX + "config.json")
 
     runClientServiceAction("install")
