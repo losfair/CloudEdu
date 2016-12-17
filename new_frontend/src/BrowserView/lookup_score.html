@@ -5,29 +5,31 @@
         <td class="text-score-lookup-service"></td>
         <td class="mdl-textfield mdl-js-textfield">
             <input class="mdl-textfield__input" type="text" id="score-lookup-service-name" value="zhixue" />
-            <label class="mdl-textfield__label text-score-lookup-service" for="score-lookup-service-name"></label>
+            <label class="mdl-textfield__label" for="score-lookup-service-name"></label>
         </td>
     </tr>
     <tr>
         <td class="text-score-lookup-username"></td>
         <td class="mdl-textfield mdl-js-textfield">
             <input class="mdl-textfield__input" type="text" id="score-lookup-username" />
-            <label class="mdl-textfield__label text-score-lookup-username" for="score-lookup-username"></label>
+            <label class="mdl-textfield__label" for="score-lookup-username"></label>
         </td>
     </tr>
     <tr>
         <td class="text-score-lookup-password"></td>
         <td class="mdl-textfield mdl-js-textfield">
             <input class="mdl-textfield__input" type="password" id="score-lookup-password" />
-            <label class="mdl-textfield__label text-score-lookup-password" for="score-lookup-password"></label>
+            <label class="mdl-textfield__label" for="score-lookup-password"></label>
         </td>
     </tr>
 </table>
 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent text-score-lookup-login score-lookup-login-button"></button>
+<div class="mdl-spinner mdl-js-spinner is-active" id="score-lookup-loading" style="display: none"></div>
 
-<div id="score-lookup-exam-details" style="display: none; margin-top: 30px">
+<div id="score-lookup-exam-info" style="display: none; margin-top: 30px">
     <span class="text-score-lookup-user-id"></span>:&nbsp;<span id="score-lookup-user-id"></span><br>
     <span id="score-lookup-last-desc"></span>:&nbsp;<span id="score-lookup-last-total"></span><br>
+    <div id="score-lookup-exam-details"></div>
 </div>
 
 <script>
@@ -43,6 +45,9 @@
                 showDialog("Error", texts[".text-unable-to-get-service-url"]);
                 return;
             }
+            $(".score-lookup-login-button").fadeOut(() => {
+                $("#score-lookup-loading").fadeIn();
+            });
             new Promise((cb) => {
                 request.post(csurl + "et/login/" + svc, {
                     "json": {
@@ -55,12 +60,14 @@
                 })
             }).then((data) => {
                 if(!data) {
-                    showDialog("Error", "Unable to parse response");
-                    return;
+                    throw "Unable to parse response";
+                }
+                if(!data.token) {
+                    throw "Login failed";
                 }
                 lookupScoreToken = data.token;
                 $("#score-lookup-user-id").text(data.user_id);
-                $("#score-lookup-exam-details").fadeIn();
+                $("#score-lookup-exam-info").fadeIn();
                 return new Promise((cb) => {
                     request.post(csurl + "et/exams/list", {
                         "json": {
@@ -73,18 +80,47 @@
                 });
             }).then((data) => {
                 if(!data) {
-                    showDialog("Error", "Unable to fetch exam list");
-                    return;
+                    throw "Unable to fetch exam list";
                 }
                 let exams = data;
                 if(!exams.length) {
-                    showDialog("Error", "No exams");
-                    return;
+                    throw "No exams";
                 }
                 let lastExam = exams[exams.length - 1];
                 $("#score-lookup-last-desc").text(lastExam.name + " 的总分");
                 $("#score-lookup-last-total").text(lastExam.score);
-            })
+                return new Promise((cb) => {
+                    request.post(csurl + "et/exams/details", {
+                        "json": {
+                            "token": lookupScoreToken,
+                            "examId": lastExam.id
+                        }
+                    }, (err, resp, body) => {
+                        if(err || !body) {
+                            cb(null);
+                            return;
+                        }
+                        cb(body);
+                    });
+                })
+            }).then((details) => {
+                if(!details || !details.length) {
+                    throw "Unable to fetch exam details";
+                }
+                let targetElem = document.getElementById("score-lookup-exam-details");
+                targetElem.innerHTML = "";
+                details.forEach((examInfo) => {
+                    targetElem.innerHTML += examInfo.name + ": " + examInfo.score + "<br>";
+                });
+                $("#score-lookup-loading").fadeOut(() => {
+                    $(".score-lookup-login-button").fadeIn();
+                });
+            }).catch((e) => {
+                $("#score-lookup-loading").fadeOut(() => {
+                    $(".score-lookup-login-button").fadeIn();
+                });
+                showDialog("Error", e.toString());
+            });
         })
     })
 

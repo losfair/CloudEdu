@@ -123,6 +123,7 @@ function showSettings() {
     $(".page-content").fadeOut();
     $("#settings-container").load("settings.html", () => {
         updateTexts();
+        componentHandler.upgradeAllRegistered();
         $("#settings-container").fadeIn();
     });
 }
@@ -131,6 +132,7 @@ function openNotificationPublisher() {
     $(".page-content").fadeOut()
     $("#notification-publisher-container").load("notification_publisher.html", () => {
         updateTexts();
+        componentHandler.upgradeAllRegistered();
         $("#notification-publisher-container").fadeIn()
     });
 }
@@ -224,8 +226,10 @@ function loadStylesFromConfig() {
 
 function showLookupScore() {
     $(".page-content").fadeOut();
-    $("#lookup-score-container").load("lookup_score.html")
-    $("#lookup-score-container").fadeIn();
+    $("#lookup-score-container").load("lookup_score.html", () => {
+        componentHandler.upgradeAllRegistered();
+        $("#lookup-score-container").fadeIn();
+    })
 }
 
 function doReboot() {

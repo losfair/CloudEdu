@@ -23,16 +23,32 @@ function loadNotifications() {
             let item = items[key];
             let newElem = document.createElement("div");
             newElem.className = "notification-card";
-            $(newElem).text(item.content);
-            $(newElem).html("<strong>" + new Date(item.time).toLocaleString() + "</strong><br>" + $(newElem).html());
+            $(newElem).addClass("mdl-shadow--2dp");
+
+            let dateElem = document.createElement("span");
+            dateElem.className = "notification-card-date";
+            dateElem.innerHTML = "<i class=\"material-icons notification-card-date-icon\">access_time</i> " + new Date(item.time).toLocaleString();
+            newElem.appendChild(dateElem);
+
+            let contentElem = document.createElement("p");
+            contentElem.className = "notification-card-content";
+            let contentHtml = "";
+            for(let i in item.content) {
+                let ch = item.content[i];
+                if(ch == "\n") contentHtml += "<br>";
+                else contentHtml += ch;
+            }
+            contentElem.innerHTML = contentHtml;
+            newElem.appendChild(contentElem);
+            
             (() => {
-                let currentElem = newElem;
-                $(currentElem).click(() => {
+                let currentElem = contentElem;
+                $(newElem).click(() => {
                     $("#new-notification-form").hide();
                     $(".expand-new-notification-form").show();
                     $("#notifications").css("height", window.innerHeight - 200);
-                    $(".notification-card").css("line-height", "20px");
-                    $(".notification-card").css("font-size", "16px");
+                    $(".notification-card-content").css("line-height", "20px");
+                    $(".notification-card-content").css("font-size", "16px");
                     $(currentElem).css("line-height", "60px");
                     $(currentElem).css("font-size", "56px");
                 });
