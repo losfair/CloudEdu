@@ -12,10 +12,11 @@ import (
     "encoding/json"
     "DeviceManager"
     "GeneralService"
+    "TemplateRenderer"
     "ConfigurationManager"
 )
 
-const CLIENT_SERVICE_VERSION = "0.2.1 20161213"
+const CLIENT_SERVICE_VERSION = "0.3.0 20161217"
 
 var deviceId string
 var cfg map[string]interface{}
@@ -174,6 +175,58 @@ func onPoweroff(w http.ResponseWriter, r *http.Request) {
     }
 }
 
+func onTemplateRenderRequest(w http.ResponseWriter, r *http.Request) {
+    defer func() {
+        if err := recover(); err != nil {
+            w.Write([]byte("Unknown error"))
+        }
+    }()
+
+    reqRawData, err := ioutil.ReadAll(r.Body)
+    if err != nil {
+        w.Write([]byte("Failed"))
+        return
+    }
+    defer r.Body.Close()
+    reqData := make(map[string]interface{})
+    err = json.Unmarshal(reqRawData, &reqData)
+    if err != nil {
+        w.Write([]byte("Unable to parse request"))
+        return
+    }
+
+    tpl := reqData["template"].(string)
+    doc := TemplateRenderer.LoadDocumentFromSource([]byte(tpl))
+    if doc == nil {
+        w.Write([]byte("Unable to load template"))
+        return
+    }
+    defer doc.Destroy()
+
+    if v, ok := reqData["params"]; ok {
+        params := v.(map[string]interface{})
+        for key, value := range params {
+            strValue := "";
+            switch value.(type) {
+                case string:
+                    strValue = value.(string)
+                case float64:
+                    strValue = strconv.FormatFloat(value.(float64), 'g', -1, 64)
+                case bool:
+                    strValue = "false"
+                    if value.(bool) {
+                        strValue = "true"
+                    }
+                default:
+                    strValue = ""
+            }
+            doc.SetParam(key, strValue)
+        }
+    }
+
+    w.Write([]byte(doc.GenerateJavascriptRenderer(false)))
+}
+
 func updateDriveList() {
     newDrives := DeviceManager.GetDriveList()
     if len(newDrives) != len(currentDriveList) {
@@ -224,6 +277,7 @@ func main() {
     // http.HandleFunc("/devices/drives/poll", onPollDriveListUpdate) // Fixme: Not working
     http.HandleFunc("/system/power/reboot", onReboot)
     http.HandleFunc("/system/power/poweroff", onPoweroff)
+    http.HandleFunc("/render_template", onTemplateRenderRequest)
 
     cmd := ""
 
