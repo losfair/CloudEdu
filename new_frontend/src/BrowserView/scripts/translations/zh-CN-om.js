@@ -47,5 +47,9 @@ let om_texts = {
     "text-unable-to-parse-response": "数据解析失败。",
     "text-score-lookup-unable-to-fetch-exam-list": "无法获取考试列表。",
     "text-score-lookup-unable-to-fetch-exam-details": "无法获取考试详情。",
-    "text-score-lookup-no-exams": "当前无考试。"
+    "text-score-lookup-no-exams": "当前无考试。",
+    "text-background-image": "背景图片",
+    "text-select-file": "选择文件",
+    "text-no-file-selected": "未选择文件。",
+    "text-image-title": "图片"
 }

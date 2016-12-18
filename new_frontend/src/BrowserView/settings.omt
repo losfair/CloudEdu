@@ -1,0 +1,21 @@
+link rel="stylesheet" type="text/css" href="css/settings.css"
+
+div .mdl-typography--display-2 .inner-page-title => [text-settings-title]
+
+table #settings-content cellspacing="10"
+	tr
+		td .settings-content-item-key => [text-alphaboard-server-addr]
+		td
+			div .settings-content-item-value .mdl-textfield .mdl-js-textfield
+				input .mdl-textfield__input .settings-content-item-value-input #alphaboard-server-addr type="text" value=[alphaboard-server-addr]
+				label .mdl-textfield__label for="alphaboard-server-addr"
+	tr
+		td .settings-content-item-key => [text-background-image]
+		td
+			div .settings-content-item-value .mdl-textfield .mdl-js-textfield
+				input .mdl-textfield__input .settings-content-item-value-input #background-image-path type="text" value=[background-image-path]
+				label .mdl-textfield__label for="background-image-path"
+		td
+			button .mdl-button .mdl-js-button .mdl-button--raised .mdl-js-ripple-effect .mdl-button--accent .select-background-image => [text-select-file]
+
+script src="scripts/settings.js"

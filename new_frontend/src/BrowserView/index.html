@@ -25,6 +25,8 @@
                 <!-- No client service warning -->
                 <i class="material-icons header-icons show-if-no-client-service" onclick="tryShowNoClientServiceWarning()">warning</i>
                 <i class="material-icons header-icons" onclick="showSettings()">settings</i>
+                <i class="material-icons header-icons" onclick="reloadPage()">refresh</i>
+                <i class="material-icons header-icons" onclick="exitApp()">close</i>
                 <span class="current-time" id="header-clock"></span>
             </div>
         </header>
@@ -59,7 +61,7 @@
                     <tr>
                         <td>
                             <!-- Notification publishing -->
-                            <div class="index-nav-card card-color-pink mdl-card mdl-shadow--2dp">
+                            <div class="index-nav-card card-with-background-image mdl-card mdl-shadow--2dp" style="background-image: url(images/blackboard.jpg)">
                                 <div class="mdl-card__title mdl-card--expand">
                                     <h4 class="text-notification-publish-title"></h4>
                                 </div>
@@ -73,7 +75,7 @@
 
                         <td>
                             <!-- AlphaBoard -->
-                            <div class="index-nav-card card-color-purple mdl-card mdl-shadow--2dp">
+                            <div class="index-nav-card card-with-background-image mdl-card mdl-shadow--2dp" style="background-image: url(images/colors.jpg)">
                                 <div class="mdl-card__title mdl-card--expand">
                                     <h4 class="text-alphaboard-title"></h4>
                                 </div>
@@ -91,7 +93,7 @@
                         <td>
 
                             <!-- File browser -->
-                            <div class="index-nav-card card-color-blue mdl-card mdl-shadow--2dp">
+                            <div class="index-nav-card card-with-background-image mdl-card mdl-shadow--2dp" style="background-image: url(images/files.jpg)">
                                 <div class="mdl-card__title mdl-card--expand">
                                     <h4 class="text-file-browser-title"></h4>
                                 </div>
@@ -105,7 +107,7 @@
                         <td>
 
                             <!-- System info -->
-                            <div class="index-nav-card card-color-orange mdl-card mdl-shadow--2dp">
+                            <div class="index-nav-card card-with-background-image mdl-card mdl-shadow--2dp" style="background-image: url(images/gears.jpg)">
                                 <div class="mdl-card__title mdl-card--expand">
                                     <h4 class="text-system-info-title"></h4>
                                 </div>
@@ -126,13 +128,13 @@
             <div id="notification-publisher-container" class="page-content page-content-invisible">
             </div>
             <!-- System info -->
-            <div id="system-info-container" class="page-content page-content-invisible">
+            <div id="system-info-container" class="page-content page-content-invisible page-content-no-transparent">
             </div>
             <!-- Settings -->
-            <div id="settings-container" class="page-content page-content-invisible">
+            <div id="settings-container" class="page-content page-content-invisible page-content-no-transparent">
             </div>
             <!-- Lookup score -->
-            <div id="lookup-score-container" class="page-content page-content-invisible">
+            <div id="lookup-score-container" class="page-content page-content-invisible page-content-no-transparent">
             </div>
             <div style="height: 50px"></div>
         </main>

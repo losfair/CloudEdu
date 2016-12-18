@@ -1,10 +1,13 @@
 link rel="stylesheet" type="text/css" href="css/notification_publisher.css"
+
 form #new-notification-form action="javascript:;"
 	div .mdl-textfield .mdl-js-textfield
-		textarea .mdl-textfield__input #new-notification type="text" rows="10"
+		textarea .mdl-textfield__input .mdl-shadow--2dp #new-notification type="text" rows="10"
 		label .mdl-textfield__label for="new-notification"
 	br
 	button .mdl-button .mdl-js-button .mdl-button--raised .mdl-js-ripple-effect .mdl-button--accent .do-notification-publish => [text-do-notification-publish]
+
 button .mdl-button .mdl-js-button .mdl-button--raised .mdl-js-ripple-effect .mdl-button--accent .expand-new-notification-form style="margin-bottom: 20px" => [text-expand-new-notification-form]
 div #notifications
+
 script src="scripts/notification_publisher.js"

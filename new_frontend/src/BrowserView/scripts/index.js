@@ -1,5 +1,5 @@
-const CURRENT_VERSION = "0.1.6";
-const CURRENT_BUILD = "20161217";
+const CURRENT_VERSION = "0.2.0";
+const CURRENT_BUILD = "20161218";
 const CLIENT_SERVICE_ADDR = "http://127.0.0.1:9033/";
 
 const request = require("request");
@@ -30,7 +30,29 @@ function updateTexts() {
     }
 }
 
+if(!localStorage.modifiedConfigItems) {
+    localStorage.modifiedConfigItems = "{}";
+};
+
+let modifiedConfigItems = {};
+try {
+    modifiedConfigItems = JSON.parse(localStorage.modifiedConfigItems);
+} catch(e) {
+    modifiedConfigItems = {};
+    localStorage.modifiedConfigItems = "{}";
+}
+
+function setConfigItem(key, value, callback) {
+    modifiedConfigItems[key] = value;
+    localStorage.modifiedConfigItems = JSON.stringify(modifiedConfigItems);
+    if(callback) callback("OK");
+}
+
 function getConfigItem(key, callback) {
+    if(modifiedConfigItems[key]) {
+        callback(modifiedConfigItems[key]);
+        return;
+    }
     request.post({
         "url": CLIENT_SERVICE_ADDR + "config/get",
         "body": JSON.stringify({
@@ -121,7 +143,21 @@ function getUptimeString() {
     return uptimeString;
 }
 
+function reloadPage() {
+    location.reload();
+}
+
+function exitApp() {
+    window.close();
+}
+
+function updateStyles() {
+    $(".page-content-no-transparent").css("width", window.innerWidth - 200);
+    $(".page-content-no-transparent").addClass("mdl-shadow--2dp");
+}
+
 function showSystemInfo() {
+    updateStyles();
     $(".page-content").fadeOut();
     $("#system-info-container").load("system_info.html", () => {
         updateTexts();
@@ -140,18 +176,50 @@ function showSystemInfo() {
 }
 
 function showSettings() {
-    $(".page-content").fadeOut();
-    $("#settings-container").load("settings.html", () => {
-        updateTexts();
+    if(!clientServiceRunning) {
+        showDialog(om_texts["text-error-title"], om_texts["text-settings-error-no-client-service"]);
+        return;
+    }
+
+    updateStyles();
+
+    let params = {};
+    new Promise((cb) => {
+        getConfigItem("AlphaBoard_ServerAddr", (v) => {
+            if(!v) {
+                cb(null);
+            } else {
+                cb(v);
+            }
+        });
+    }).then((result) => {
+        if(result) {
+            params["alphaboard-server-addr"] = result;
+        }
+        return new Promise((cb) => {
+            getConfigItem("backgroundImage", (v) => {
+                if(!v) {
+                    cb(null);
+                } else {
+                    cb(v);
+                }
+            });
+        });
+    }).then((result) => {
+        if(result) {
+            params["background-image-path"] = result;
+        }
+        $(".page-content").fadeOut();
+        $("#settings-container").html(templateCache["settings"](params));
         componentHandler.upgradeAllRegistered();
         $("#settings-container").fadeIn();
-    });
+    })
 }
 
 function openNotificationPublisher() {
+    updateStyles();
     $(".page-content").fadeOut()
     $("#notification-publisher-container").html(templateCache["notification_publisher"]());
-    updateTexts();
     componentHandler.upgradeAllRegistered();
     $("#notification-publisher-container").fadeIn()
 }
@@ -268,6 +336,7 @@ function loadTemplateFileToCacheLocalized(name) {
 
 function initTemplateCache() {
     loadTemplateFileToCacheLocalized("notification_publisher");
+    loadTemplateFileToCacheLocalized("settings");
 }
 
 window.addEventListener("load", () => {
@@ -286,4 +355,5 @@ window.addEventListener("load", () => {
     $(".do-poweroff").click(doPoweroff);
     startCheckDriveChange();
     startTimerUpdate();
+    setTimeout(updateStyles, 500);
 });
