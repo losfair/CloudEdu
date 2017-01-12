@@ -1,41 +1,19 @@
-function getQueryString(name)
-{
-    var reg = new RegExp("(\\?|&)"+ name +"=([^&]*)(&|$)");
-    var r = window.location.href.substr(1).match(reg);
-    if(r) return unescape(r[2]);
-    else return null;
-}
+import "babel-polyfill";
+import * as pageUtils from "./pageUtils.js";
+import * as network from "./network.js";
 
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length,c.length);
-        }
-    }
-    return "";
-}
-
-function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
+let getQueryString = pageUtils.getParameterByName;
 
 function showAlert(msg) {
     $("#alert-content").html(msg);
     $("#alert-box").fadeIn();
 }
+window.showAlert = showAlert;
 
 function hideAlert() {
     $("#alert-box").fadeOut();
 }
+window.hideAlert = hideAlert;
 
 function doLocalLogout() {
     $("#main-progress-bar").fadeIn();
@@ -44,6 +22,7 @@ function doLocalLogout() {
         location.reload();
     });
 }
+window.doLocalLogout = doLocalLogout;
 
 function getZhixueExamDetails(targetElement) {
     if(targetElement.detailsLoaded) return;
@@ -84,6 +63,7 @@ function getZhixueExamDetails(targetElement) {
         }
     })
 }
+window.getZhixueExamDetails = getZhixueExamDetails;
 
 function getZhixueExams() {
     $("#main-progress-bar").fadeIn();
@@ -136,6 +116,7 @@ function getZhixueExams() {
         }
     });
 }
+window.getZhixueExams = getZhixueExams;
 
 function handleZhixueLogin() {
     $("#zhixue-login-card").fadeOut();
@@ -155,9 +136,10 @@ function hashLoginName(loginName) {
 }
 
 function redirectToLogin() {
-    setCookie("HyperIdentity-Session-Status", "Pending", 0.001);
+    sessionStorage["HyperIdentity-Session-Status"] = "Pending";
     window.location = sso_url + "identity/user/login?callback=" + encodeURIComponent(location.href.split("?")[0]);
 }
+window.redirectToLogin = redirectToLogin;
 
 function onZhixueLoginClick() {
     var loginName = $("#zhixue-loginName").val();
@@ -194,6 +176,7 @@ function onZhixueLoginClick() {
         handleZhixueLogin();
     });
 }
+window.onZhixueLoginClick = onZhixueLoginClick;
 
 function showScoreLookupModule() {
     $(".page-module").fadeOut();
@@ -201,6 +184,7 @@ function showScoreLookupModule() {
     $(".nav-button").removeClass("active");
     $("#nav-button-score-lookup").addClass("active");
 }
+window.showScoreLookupModule = showScoreLookupModule;
 
 function showCloudEduNotificationModule() {
     $(".page-module").fadeOut();
@@ -208,52 +192,58 @@ function showCloudEduNotificationModule() {
     $(".nav-button").removeClass("active");
     $("#nav-button-cloudedu-notification").addClass("active");
 }
+window.showCloudEduNotificationModule = showCloudEduNotificationModule;
 
-function onCloudEduLoginClick(noUpdateUserDevice) {
-    var deviceIdPrefix = $("#cloudedu-device-id").val();
+async function onCloudEduLoginClick(noUpdateUserDevice) {
+    let deviceIdPrefix = $("#cloudedu-device-id").val();
     if(noUpdateUserDevice) noUpdateUserDevice = true;
     else {
         noUpdateUserDevice = false;
         localStorage.cloudEduDeviceIdPrefix = deviceIdPrefix;
     }
     $("#main-progress-bar").fadeIn();
-    $.post("/et/cloudedu/fetch_notifications", {
+    let resp = await makeRequest("POST", "/et/cloudedu/fetch_notifications", {
         "device": deviceIdPrefix,
         "no_update_user_device": noUpdateUserDevice
-    }, function(resp) {
-        if(!resp) {
-            showAlert("获取失败。");
-            $("#main-progress-bar").fadeOut();
-            return;
-        }
-        try {
-            var data = JSON.parse(resp);
-        } catch(e) {
-            if(resp == "HyperIdentity authentication required") {
-                redirectToLogin();
-                return;
-            }
-            showAlert("获取失败: " + resp);
-            $("#main-progress-bar").fadeOut();
-            return;
-        }
-        hideAlert();
-        document.getElementById("cloudedu-notification-cards").innerHTML = "";
-        for(var id = 0; id < data.length; id++) {
-            var item = data[id];
-
-            var newElement = document.createElement("div");
-            newElement.className = "block-card";
-            newElement.innerHTML = "<strong>"+new Date(item.time).toLocaleString()+"</strong><br>"+item.content;
-
-            document.getElementById("cloudedu-notification-cards").appendChild(newElement);
-        }
-        $("#main-progress-bar").fadeOut();
     });
-}
+    /*$.post("/et/cloudedu/fetch_notifications", {
+        "device": deviceIdPrefix,
+        "no_update_user_device": noUpdateUserDevice
+    }, function(resp) {*/
+    if(!resp) {
+        showAlert("获取失败。");
+        $("#main-progress-bar").fadeOut();
+        return;
+    }
+    try {
+        var data = JSON.parse(resp);
+    } catch(e) {
+        if(resp == "HyperIdentity authentication required") {
+            redirectToLogin();
+            return;
+        }
+        showAlert("获取失败: " + resp);
+        $("#main-progress-bar").fadeOut();
+        return;
+    }
+    hideAlert();
+    document.getElementById("cloudedu-notification-cards").innerHTML = "";
+    for(let id = 0; id < data.length; id++) {
+        let item = data[id];
 
-if(getCookie("HyperIdentity-Session-Status") == "Pending") {
-    setCookie("HyperIdentity-Session-Status", "", 0);
+        let newElement = document.createElement("div");
+        newElement.className = "block-card";
+        newElement.innerHTML = "<strong>"+new Date(item.time).toLocaleString()+"</strong><br>"+item.content;
+
+        document.getElementById("cloudedu-notification-cards").appendChild(newElement);
+    }
+    $("#main-progress-bar").fadeOut();
+    //});
+}
+window.onCloudEduLoginClick = onCloudEduLoginClick;
+
+if(sessionStorage["HyperIdentity-Session-Status"] && sessionStorage["HyperIdentity-Session-Status"] == "Pending") {
+    delete sessionStorage["HyperIdentity-Session-Status"]
 
     var clientToken = getQueryString("client_token");
     if(!clientToken) showAlert("无法获取 Token , 认证失败");
