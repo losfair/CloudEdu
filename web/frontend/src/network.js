@@ -16,7 +16,17 @@ export function makeRequest(method, url, data, headers) {
                 }
             }
         };
-        if(data) xhr.send(data);
+        if(data) {
+            if(typeof(data) == "object") { // encode to html form by default
+                let t = "";
+                Object.keys(data).forEach(k => {
+                    t += encodeURIComponent(k) + "=" + encodeURIComponent(data[k]) + "&";
+                });
+                data = t.substring(0, t.length - 1); // remove the last char '&'
+                if(!headers || !headers["Content-Type"]) xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            }
+            xhr.send(data);
+        }
         else xhr.send(null);
     });
 }

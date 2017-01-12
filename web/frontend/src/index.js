@@ -202,7 +202,7 @@ async function onCloudEduLoginClick(noUpdateUserDevice) {
         localStorage.cloudEduDeviceIdPrefix = deviceIdPrefix;
     }
     $("#main-progress-bar").fadeIn();
-    let resp = await makeRequest("POST", "/et/cloudedu/fetch_notifications", {
+    let resp = await network.makeRequest("POST", "/et/cloudedu/fetch_notifications", {
         "device": deviceIdPrefix,
         "no_update_user_device": noUpdateUserDevice
     });
