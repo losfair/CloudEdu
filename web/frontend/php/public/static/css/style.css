@@ -1,0 +1,11 @@
+.block-card {
+    width: 100%;
+    border-bottom: 1px solid #AAAAAA;
+    text-align: center;
+    line-height: 32px;
+    font-size: 14px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    word-wrap: break-word;
+    word-break: break-all;
+}
