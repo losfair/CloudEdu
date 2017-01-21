@@ -9,3 +9,14 @@ export function getParameterByName(name, url) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
+
+function showAlert(msg) {
+    $("#alert-content").html(msg);
+    $("#alert-box").fadeIn();
+}
+window.showAlert = showAlert;
+
+function hideAlert() {
+    $("#alert-box").fadeOut();
+}
+window.hideAlert = hideAlert;

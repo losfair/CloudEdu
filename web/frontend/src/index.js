@@ -1,19 +1,9 @@
 import "babel-polyfill";
 import * as pageUtils from "./pageUtils.js";
 import * as network from "./network.js";
+import "./eventStream.js";
 
 let getQueryString = pageUtils.getParameterByName;
-
-function showAlert(msg) {
-    $("#alert-content").html(msg);
-    $("#alert-box").fadeIn();
-}
-window.showAlert = showAlert;
-
-function hideAlert() {
-    $("#alert-box").fadeOut();
-}
-window.hideAlert = hideAlert;
 
 function doLocalLogout() {
     $("#main-progress-bar").fadeIn();

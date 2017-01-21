@@ -235,7 +235,10 @@ def onExamDetails():
                     "highest": subject["classRank"]["highScore"]
                 },
                 "grade": {
-                    "msg": "Not implemented"
+                    "rank": subject["gradeRank"]["rank"],
+                    "total": subject["gradeRank"]["totalNum"],
+                    "average": subject["gradeRank"]["avgScore"],
+                    "highest": subject["gradeRank"]["highScore"]
                 }
             }
         }

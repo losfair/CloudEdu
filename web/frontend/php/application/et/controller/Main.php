@@ -2,8 +2,20 @@
 namespace app\et\controller;
 
 use think\Db;
+use \EventStreamClientContext;
+
+require("event_stream_service_api.php");
 
 class Main {
+    private $esClientContext = null;
+    private $initialized = false;
+
+    private function init() {
+        if($this -> initialized) return;
+        $this -> esClientContext = new EventStreamClientContext();
+        $this -> initialized = true;
+    }
+
     private function backend_request($path, $data) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "http://localhost:6096/" . $path);
@@ -146,6 +158,8 @@ class Main {
     }
 
     public function login($service) {
+        $this -> init();
+
         if(!session("HyperIdentity-User-Name")) {
             return "HyperIdentity authentication required";
         }
@@ -191,6 +205,13 @@ class Main {
                 "password" => $pw
             ]);
         }
+
+        $this -> esClientContext -> add_event(
+            md5($ssoUsername),
+            "CloudEdu 用户登录",
+            "登录第三方服务: " . $service,
+            time() * 1000
+        );
 
         session("Zhixue-Token", $login_result["token"]);
         session("Zhixue-User-Id", $login_result["user_id"]);
