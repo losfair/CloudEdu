@@ -3,7 +3,7 @@
 class EventStreamClientContext {
     private $port, $addr;
 
-    public function __construct($new_port = 5619, $new_addr = "127.0.0.1") {
+    public function __construct($new_port = 5619, $new_addr = "172.16.8.1") {
         $this -> port = $new_port;
         $this -> addr = $new_addr;
     }

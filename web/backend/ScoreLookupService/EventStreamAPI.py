@@ -7,7 +7,7 @@ class Context:
         if port == None:
             port = 5619
         if addr == None:
-            addr = "127.0.0.1"
+            addr = "172.16.8.1"
         
         self.port = port
         self.addr = addr
@@ -22,7 +22,7 @@ class Context:
         recv_dict = json.loads(recv_data)
         return recv_dict
 
-    def add_event(self, user_id, title, description, event_time = None):
+    def add_event(self, user_id, title, description, event_time = None, check_duplicate = False):
         if event_time == None:
             event_time = int(time.time() * 1000)
         
@@ -31,7 +31,8 @@ class Context:
             "eventUserId": user_id,
             "eventTitle": title,
             "eventDescription": description,
-            "eventTime": event_time
+            "eventTime": event_time,
+            "checkDuplicate": check_duplicate
         }
         result = self.request(data)
         if result["err"] != 0:

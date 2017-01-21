@@ -127,7 +127,7 @@ function hashLoginName(loginName) {
 
 function redirectToLogin() {
     sessionStorage["HyperIdentity-Session-Status"] = "Pending";
-    window.location = sso_url + "identity/user/login?callback=" + encodeURIComponent(location.href.split("?")[0]);
+    window.location = sso_url + "web/?callback=" + encodeURIComponent(location.href.split("?")[0]) + "#auth";
 }
 window.redirectToLogin = redirectToLogin;
 

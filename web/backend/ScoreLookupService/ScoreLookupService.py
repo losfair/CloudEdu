@@ -1,12 +1,16 @@
+# -*- coding: utf-8 -*-
+
 import flask
 import gevent.monkey
 import gevent.pywsgi
+from gevent import Greenlet
 import pymongo
 import requests
 import json
 import cffi
 import hashlib
 import time
+import EventStreamAPI
 
 ffi = cffi.FFI()
 
@@ -19,12 +23,15 @@ void free_memory();
 utils = ffi.dlopen("./utils.so")
 
 targetDb = pymongo.MongoClient().HydroCloud_EventTimeline
+webDb = pymongo.MongoClient().schoolEventTimeline
 
 noCache = True
 
 gevent.monkey.patch_all()
 
 app = flask.Flask(__name__)
+
+esContext = EventStreamAPI.Context()
 
 @app.route("/login/zhixue", methods = ["POST"])
 def onZhixueLogin():
@@ -102,7 +109,7 @@ def onZhixueLogin():
 @app.route("/exams/list", methods = ["POST"])
 def onExamList():
     resp = flask.Response("Unknown error")
-    resp.headers["Access-Control-Allow-Origin"] = "*";
+    resp.headers["Access-Control-Allow-Origin"] = "*"
 
     req_data = json.loads(flask.request.get_data())
 
@@ -149,15 +156,30 @@ def onExamList():
     
     resp_json = []
 
+    sso_user_info = webDb.zhixue_users.find_one({
+        "loginName": token_props["login_name"]
+    })
+
+    if sso_user_info == None:
+        resp.set_data("Error: SSO user info not found")
+        return resp
+
+    sso_username = sso_user_info["sso_username"];
+
     for item in zx_resp_json["result"]:
         new_item = {
             "time": item["examCreateDateTime"],
             "id": item["examId"],
             "name": item["examName"],
-            "score": item["score"],
+            "score": item["score"]
         }
 
         resp_json.append(new_item)
+
+        for subject in item["subjectScores"]:
+            md5Context = hashlib.md5()
+            md5Context.update(sso_username)
+            Greenlet.spawn(lambda u, t, d, pt: esContext.add_event(u, t, d, pt, True), md5Context.hexdigest(), u"考试成绩公布", u"考试名称: " + item["examName"] + u"<br>科目: " + subject["subjectName"], subject["publishTime"])
     
     result_json = json.dumps(resp_json)
 
@@ -174,7 +196,7 @@ def onExamList():
 @app.route("/exams/details", methods = ["POST"])
 def onExamDetails():
     resp = flask.Response("Unknown error")
-    resp.headers["Access-Control-Allow-Origin"] = "*";
+    resp.headers["Access-Control-Allow-Origin"] = "*"
 
     req_data = json.loads(flask.request.get_data())
 
