@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>CloudEdu Events</title>
+
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+
+	<script>
+		var sso_url = "{$sso_url}";
+	</script>
+
+  </head>
+  <body>
+
+    <div class="container-fluid">
+	<div style="height: 20px"></div>
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="nav nav-tabs">
+				<li class="nav-button active" id="nav-button-score-lookup">
+					<a href="#" onclick="showScoreLookupModule()">成绩查询</a>
+				</li>
+				<li class="nav-button" id="nav-button-cloudedu-notification">
+					<a href="#" onclick="showCloudEduNotificationModule()">班级通知</a>
+				</li>
+				<li class="dropdown pull-right">
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle"><strong id="dropdown-username">未登录</strong><strong class="caret"></strong></a>
+					<ul class="dropdown-menu" style="padding: 10px 10px">
+						<li class="dropdown-options-if-logged-in">
+							<a href="{$sso_url}identity/me/">用户管理</a>
+						</li>
+						<li class="dropdown-options-if-logged-in">
+							<a href="javascript:doLocalLogout();">登出</a>
+						</li>
+						<li class="dropdown-options-if-not-logged-in">
+							<a href="javascript:redirectToLogin();">登录</a>
+						</li>
+						<!--<li class="divider">
+						</li>
+						<li>
+							<a href="#">Separated link</a>
+						</li>-->
+					</ul>
+				</li>
+			</ul>
+			<div style="height: 20px"></div>
+			<div class="alert alert-warning alert-dismissable" style="display: none" id="alert-box">
+				 
+				<button type="button" class="close" aria-hidden="true" onclick="$('#alert-box').fadeOut()">
+					×
+				</button>
+				<h4>提示</h4>
+				<div id="alert-content"></div>
+			</div>
+			<div class="progress progress-striped active" style="display: none" id="main-progress-bar">
+				<div class="progress-bar progress-success" style="width: 100%">
+				</div>
+			</div>
+			<div id="get-my-score" class="page-module">
+				<form role="form" action="javascript:;" id="zhixue-login-card">
+					<div class="form-group">
+						<label for="zhixue-loginName">
+							智学网用户名
+						</label>
+						<input type="text" class="form-control" id="zhixue-loginName">
+					</div>
+					<div class="form-group">
+						<label for="zhixue-password">
+							智学网登录密码
+						</label>
+						<input type="password" class="form-control" id="zhixue-password">
+					</div>
+					<button onclick="onZhixueLoginClick()" class="btn btn-default btn-primary">
+						登录
+					</button>
+				</form>
+				<div id="exam-cards"></div>
+			</div>
+			<div id="cloudedu-notification" class="page-module" style="display: none">
+				<form role="form" action="javascript:;" id="cloudedu-login-input">
+					<div class="form-group">
+						<label for="cloudedu-device-id">
+							CloudEdu 终端设备 ID
+						</label>
+						<input type="text" class="form-control" id="cloudedu-device-id">
+					</div>
+					<button onclick="onCloudEduLoginClick()" class="btn btn-default btn-primary">
+						登录
+					</button>
+				</form>
+				<div id="cloudedu-notification-cards"></div>
+			</div>
+			<h5 class="text-center" style="margin-top: 35px">
+				Copyright &copy; 2016 ifxor.com. All rights reserved.
+			</h5>
+		</div>
+	</div>
+</div>
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bundle.min.js"></script>
+  </body>
+</html>
