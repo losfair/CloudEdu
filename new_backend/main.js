@@ -132,13 +132,15 @@ app.post("/notification/publish", wrap(async function (req, resp) {
         "time": Date.now()
     });
 
+    let deviceIdPrefix = req.body.deviceId.substring(0, 8);
+
     let users = await dbContext.collection("push_user_device_auths").find({
-        "deviceIdPrefix": req.body.deviceId.substring(0, 8)
+        "deviceIdPrefix": deviceIdPrefix
     }).toArray();
     let currentTime = Date.now();
     if(users && users.length) {
         for(let i = 0; i < users.length; i++) {
-            esContext.addEvent(users[i].userId, "CloudEdu 通知（来自终端设备）", req.body.content, currentTime).catch(e => console.log(e));
+            esContext.addEvent(users[i].userId, "CloudEdu 通知 - 终端设备 " + deviceIdPrefix, req.body.content, currentTime).catch(e => console.log(e));
         }
     }
     resp.send("OK");
