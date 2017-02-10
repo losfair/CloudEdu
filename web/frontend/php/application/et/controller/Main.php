@@ -54,7 +54,7 @@ class Main {
 
     public function check_sso_status() {
         $clientToken = $_POST["client_token"];
-        if(!$clientToken || strlen($clientToken) != 16) return "Invalid token";
+        if(!$clientToken) return "Invalid token";
 
         $ch = curl_init();
 
